@@ -1,0 +1,30 @@
+{
+  "app_type": "saas_dashboard",
+  "app_name": "StellarRank",
+  "tagline": "AI-driven SEO insights & automation to put your e-commerce brand at #1 on Google.",
+  "primary_color": "#1A73E8",
+  "accent_color": "#FFB300",
+  "sections": [
+    "Overview",
+    "Keyword Research",
+    "Content Generator",
+    "Link Building",
+    "Performance Reports",
+    "Account Settings"
+  ],
+  "backend_resources": [
+    "user_management",
+    "billing",
+    "keyword_service",
+    "content_generation_service",
+    "link_building_service",
+    "analytics_engine"
+  ],
+  "features": [
+    "AI-powered keyword suggestions with search volume & difficulty scores",
+    "Automated SEO-friendly content creation for product pages and blogs",
+    "Smart link‑building workflow with outreach tracking",
+    "Real‑time ranking and traffic dashboards",
+    "Customizable, exportable SEO performance reports"
+  ]
+}
