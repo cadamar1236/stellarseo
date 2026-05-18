@@ -1,4 +1,4 @@
-# StellarSEO — Backend API
+# StellarSEO â€” Backend API
 
 App type: **saas_dashboard**
 
