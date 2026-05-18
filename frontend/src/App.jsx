@@ -13,6 +13,79 @@ async function apiFetch(path, opts = {}) {
   return null;
 }
 
+function LandingPage({ onStart }) {
+  return (
+    <div className="min-h-screen bg-[#06080f] text-slate-100 font-[Inter] flex flex-col">
+      <header className="flex items-center justify-between px-8 py-6 border-b border-white/5">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00C9A7] to-[#1E3A5F] flex items-center justify-center shadow-2xl shadow-[#00C9A7]/20">
+            <TrendingUp className="w-6 h-6 text-white" />
+          </div>
+          <div>
+            <h1 className="text-xl font-bold text-white">StellarRank</h1>
+            <p className="text-xs text-slate-400">AI SEO Command Center</p>
+          </div>
+        </div>
+        <button 
+          onClick={onStart}
+          className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#00C9A7] to-[#1E3A5F] rounded-lg hover:opacity-90 transition-all duration-200 shadow-lg shadow-[#00C9A7]/20 hover:shadow-[#00C9A7]/40"
+        >
+          Go to Dashboard
+        </button>
+      </header>
+      
+      <main className="flex-1 flex items-center justify-center px-6 py-20">
+        <div className="max-w-4xl mx-auto text-center">
+          <div className="inline-block px-4 py-1.5 bg-[#00C9A7]/10 rounded-full text-[#00C9A7] text-sm font-medium mb-6 border border-[#00C9A7]/20">
+            AI-Powered SEO Platform
+          </div>
+          <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
+            <span className="gradient-text">Dominate</span> the Search Rankings<br />
+            <span className="text-slate-300">with Intelligent Automation</span>
+          </h2>
+          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
+            StellarRank uses advanced AI to analyze keywords, generate optimized content, 
+            and build backlinks that skyrocket your organic traffic.
+          </p>
+          <div className="flex flex-wrap gap-4 justify-center mb-16">
+            <button 
+              onClick={onStart}
+              className="px-8 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-[#00C9A7] to-[#1E3A5F] rounded-xl hover:opacity-90 transition-all duration-200 shadow-xl shadow-[#00C9A7]/20 hover:shadow-[#00C9A7]/40"
+            >
+              Launch Dashboard
+            </button>
+            <button className="px-8 py-3.5 text-base font-medium text-slate-300 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-200">
+              Watch Demo
+            </button>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="glass p-8 text-left">
+              <Search className="w-10 h-10 text-[#00C9A7] mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">Smart Keyword Research</h3>
+              <p className="text-slate-400 text-sm">Discover high-value keywords with AI-powered difficulty analysis and volume predictions.</p>
+            </div>
+            <div className="glass p-8 text-left">
+              <FileText className="w-10 h-10 text-[#00C9A7] mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">Auto Content Generation</h3>
+              <p className="text-slate-400 text-sm">Generate SEO-optimized articles that rank, using our proprietary AI models.</p>
+            </div>
+            <div className="glass p-8 text-left">
+              <Link className="w-10 h-10 text-[#00C9A7] mb-4" />
+              <h3 className="text-lg font-semibold text-white mb-2">Backlink Building</h3>
+              <p className="text-slate-400 text-sm">Automated outreach and link placement that grows your domain authority.</p>
+            </div>
+          </div>
+        </div>
+      </main>
+      
+      <footer className="px-8 py-6 border-t border-white/5">
+        <p className="text-center text-slate-500 text-sm">© 2025 StellarRank. All rights reserved.</p>
+      </footer>
+    </div>
+  );
+}
+
 function Sidebar({ activeView, onNavigate }) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -377,6 +450,7 @@ export default function App() {
   const [activeView, setActiveView] = useState('dashboard');
   const [notificationCount, setNotificationCount] = useState(0);
   const [cssInjected, setCssInjected] = useState(false);
+  const [showLanding, setShowLanding] = useState(true);
 
   useEffect(() => {
     if (!cssInjected) {
@@ -409,6 +483,10 @@ export default function App() {
     };
     fetchData();
   }, []);
+
+  if (showLanding) {
+    return <LandingPage onStart={() => setShowLanding(false)} />;
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#06080f] text-slate-100 font-[Inter]">
