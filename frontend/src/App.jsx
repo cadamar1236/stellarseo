@@ -1,7 +1,8 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import { BarChart3, TrendingUp, Search, Users, Bell, Settings, LayoutDashboard, ChevronDown, ArrowUpRight, ArrowDownRight, Mail, FileText, Link, Activity } from 'lucide-react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { Search, Bell, User, LayoutDashboard, TrendingUp, FileText, Settings, Plus, ChevronUp, ChevronDown, Zap, Target, Globe, TrendingDown, ArrowUpRight, ArrowDownRight, Activity, RefreshCw, ExternalLink, CheckCircle, Clock, AlertCircle } from 'lucide-react'
 
 const BASE = window.__BACKEND_URL__ || '';
+
 async function apiFetch(path, opts = {}) {
   for (let i = 0; i < 5; i++) {
     try {
@@ -13,357 +14,314 @@ async function apiFetch(path, opts = {}) {
   return null;
 }
 
-function LandingPage({ onStart }) {
-  return (
-    <div className="min-h-screen bg-[#06080f] text-slate-100 font-[Inter] flex flex-col">
-      <header className="flex items-center justify-between px-8 py-6 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#00C9A7] to-[#1E3A5F] flex items-center justify-center shadow-2xl shadow-[#00C9A7]/20">
-            <TrendingUp className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-white">StellarRank</h1>
-            <p className="text-xs text-slate-400">AI SEO Command Center</p>
-          </div>
-        </div>
-        <button 
-          onClick={onStart}
-          className="px-6 py-2.5 text-sm font-semibold text-white bg-gradient-to-r from-[#00C9A7] to-[#1E3A5F] rounded-lg hover:opacity-90 transition-all duration-200 shadow-lg shadow-[#00C9A7]/20 hover:shadow-[#00C9A7]/40"
-        >
-          Go to Dashboard
-        </button>
-      </header>
-      
-      <main className="flex-1 flex items-center justify-center px-6 py-20">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="inline-block px-4 py-1.5 bg-[#00C9A7]/10 rounded-full text-[#00C9A7] text-sm font-medium mb-6 border border-[#00C9A7]/20">
-            AI-Powered SEO Platform
-          </div>
-          <h2 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
-            <span className="gradient-text">Dominate</span> the Search Rankings<br />
-            <span className="text-slate-300">with Intelligent Automation</span>
-          </h2>
-          <p className="text-lg text-slate-400 max-w-2xl mx-auto mb-10">
-            StellarRank uses advanced AI to analyze keywords, generate optimized content, 
-            and build backlinks that skyrocket your organic traffic.
-          </p>
-          <div className="flex flex-wrap gap-4 justify-center mb-16">
-            <button 
-              onClick={onStart}
-              className="px-8 py-3.5 text-base font-semibold text-white bg-gradient-to-r from-[#00C9A7] to-[#1E3A5F] rounded-xl hover:opacity-90 transition-all duration-200 shadow-xl shadow-[#00C9A7]/20 hover:shadow-[#00C9A7]/40"
-            >
-              Launch Dashboard
-            </button>
-            <button className="px-8 py-3.5 text-base font-medium text-slate-300 bg-white/5 rounded-xl border border-white/10 hover:bg-white/10 transition-all duration-200">
-              Watch Demo
-            </button>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="glass p-8 text-left">
-              <Search className="w-10 h-10 text-[#00C9A7] mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Smart Keyword Research</h3>
-              <p className="text-slate-400 text-sm">Discover high-value keywords with AI-powered difficulty analysis and volume predictions.</p>
-            </div>
-            <div className="glass p-8 text-left">
-              <FileText className="w-10 h-10 text-[#00C9A7] mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Auto Content Generation</h3>
-              <p className="text-slate-400 text-sm">Generate SEO-optimized articles that rank, using our proprietary AI models.</p>
-            </div>
-            <div className="glass p-8 text-left">
-              <Link className="w-10 h-10 text-[#00C9A7] mb-4" />
-              <h3 className="text-lg font-semibold text-white mb-2">Backlink Building</h3>
-              <p className="text-slate-400 text-sm">Automated outreach and link placement that grows your domain authority.</p>
-            </div>
-          </div>
-        </div>
-      </main>
-      
-      <footer className="px-8 py-6 border-t border-white/5">
-        <p className="text-center text-slate-500 text-sm">© 2025 StellarRank. All rights reserved.</p>
-      </footer>
-    </div>
-  );
+function injectStyles() {
+  const style = document.createElement('style');
+  style.textContent = `
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+    :root { --accent: #6366F1; --accent2: #8B5CF6; }
+    .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
+    .gradient-text { background: linear-gradient(135deg, #6366F1, #8B5CF6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+    .fade-in { animation: fadeIn 0.3s ease forwards; }
+  `;
+  document.head.appendChild(style);
 }
 
-function Sidebar({ activeView, onNavigate }) {
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'analytics', label: 'Analytics', icon: BarChart3 },
-    { id: 'reports', label: 'Reports', icon: FileText },
-    { id: 'settings', label: 'Settings', icon: Settings },
-  ];
+const navItems = [
+  { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'analytics', label: 'Analytics', icon: TrendingUp },
+  { id: 'reports', label: 'Reports', icon: FileText },
+  { id: 'settings', label: 'Settings', icon: Settings },
+]
 
+function Sidebar({ activeView, setActiveView }) {
   return (
     <aside className="w-64 flex-shrink-0 flex flex-col border-r border-white/5 bg-white/[0.02] h-full">
-      <div className="p-6 border-b border-white/5">
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00C9A7] to-[#1E3A5F] flex items-center justify-center">
-            <TrendingUp className="w-5 h-5 text-white" />
+      <div className="h-14 flex items-center px-5 border-b border-white/5">
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1A237E] to-[#00E5FF] flex items-center justify-center">
+            <Zap className="w-4 h-4 text-white" />
           </div>
-          <div>
-            <h1 className="text-lg font-semibold text-white">StellarRank</h1>
-            <p className="text-xs text-slate-400">AI SEO Command Center</p>
-          </div>
+          <span className="font-semibold text-base gradient-text">StellarSEO</span>
         </div>
       </div>
-      <nav className="flex-1 p-4 space-y-1">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = activeView === item.id;
-          return (
-            <button
-              key={item.id}
-              onClick={() => onNavigate(item.id)}
-              className={`w-full flex items-center gap-3 px-4 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
-                isActive
-                  ? 'bg-[#1E3A5F]/40 text-white border border-[#00C9A7]/20'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
-              }`}
-            >
-              <Icon className={`w-5 h-5 transition-colors ${
-                isActive ? 'text-[#00C9A7]' : 'text-slate-500 group-hover:text-slate-300'
-              }`} />
-              {item.label}
-            </button>
-          );
-        })}
+      <nav className="flex-1 py-4 px-3 space-y-1">
+        {navItems.map(item => (
+          <button
+            key={item.id}
+            onClick={() => setActiveView(item.id)}
+            className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+              activeView === item.id
+                ? 'bg-white/10 text-white'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            <item.icon className="w-4 h-4 flex-shrink-0" />
+            <span>{item.label}</span>
+          </button>
+        ))}
       </nav>
       <div className="p-4 border-t border-white/5">
-        <div className="flex items-center gap-3 px-4 py-3 rounded-lg bg-white/[0.02]">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00C9A7] to-[#1E3A5F] flex items-center justify-center">
-            <Users className="w-4 h-4 text-white" />
+        <div className="glass p-3">
+          <div className="flex items-center gap-2 mb-2">
+            <div className="w-2 h-2 rounded-full bg-green-400"></div>
+            <span className="text-xs text-slate-400">API Status</span>
           </div>
-          <div>
-            <p className="text-sm font-medium text-white">Sarah Chen</p>
-            <p className="text-xs text-slate-400">Enterprise Plan</p>
-          </div>
+          <div className="text-xs text-slate-300">All systems operational</div>
         </div>
       </div>
     </aside>
-  );
+  )
 }
 
-function TopBar({ notificationCount }) {
+function TopBar() {
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifications, setNotifications] = useState([
+    { id: 1, text: 'New keyword ranking update available', time: '2m ago', read: false },
+    { id: 2, text: 'Content generation complete for 3 articles', time: '1h ago', read: false },
+    { id: 3, text: 'Link building campaign started', time: '3h ago', read: true },
+  ])
+
   return (
-    <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 flex-shrink-0 bg-white/[0.02]">
-      <div className="flex items-center gap-4">
-        <div className="flex items-center gap-2">
-          <span className="text-sm font-medium text-slate-300">StellarRank</span>
-          <span className="text-xs text-slate-500">/</span>
-          <span className="text-sm text-slate-400">Dashboard</span>
-        </div>
-        <div className="hidden md:flex items-center gap-2 bg-white/5 rounded-lg px-3 py-1.5 border border-white/5">
-          <svg className="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-          </svg>
-          <input type="text" placeholder="Search keywords, projects..." className="bg-transparent text-sm text-slate-300 placeholder-slate-500 outline-none w-48" />
+    <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 flex-shrink-0 bg-[#06080f]/80 backdrop-blur-sm">
+      <div className="flex items-center gap-4 flex-1">
+        <div className="relative max-w-md w-full">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search keywords, campaigns..."
+            className="w-full bg-white/5 border border-white/10 rounded-lg pl-10 pr-4 py-2 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#00E5FF]/50 focus:ring-1 focus:ring-[#00E5FF]/20 transition-all"
+          />
         </div>
       </div>
-      <div className="flex items-center gap-4">
-        <button className="relative p-2 rounded-lg hover:bg-white/5 transition-all duration-200">
-          <Bell className="w-5 h-5 text-slate-400" />
-          {notificationCount > 0 && (
-            <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-[#00C9A7] rounded-full text-[10px] font-bold text-white flex items-center justify-center">
-              {notificationCount}
-            </span>
+      <div className="flex items-center gap-3">
+        <div className="relative">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="relative p-2 rounded-lg hover:bg-white/5 transition-colors"
+          >
+            <Bell className="w-4 h-4 text-slate-400" />
+            <span className="absolute top-1 right-1 w-2 h-2 bg-[#00E5FF] rounded-full"></span>
+          </button>
+          {showNotifications && (
+            <div className="absolute right-0 top-full mt-2 w-80 glass p-2 z-50">
+              <div className="text-sm font-medium text-slate-300 px-3 py-2">Notifications</div>
+              {(notifications || []).map(n => (
+                <div key={n.id} className={`flex items-start gap-3 px-3 py-2.5 rounded-lg cursor-pointer hover:bg-white/5 transition-colors ${!n.read ? 'bg-white/[0.03]' : ''}`}>
+                  <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${!n.read ? 'bg-[#00E5FF]' : 'bg-transparent'}`}></div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-slate-200">{n.text}</div>
+                    <div className="text-xs text-slate-500 mt-0.5">{n.time}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
           )}
-        </button>
-        <div className="flex items-center gap-3 pl-4 border-l border-white/5">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00C9A7] to-[#1E3A5F] flex items-center justify-center">
-            <span className="text-sm font-semibold text-white">SC</span>
+        </div>
+        <div className="flex items-center gap-2 pl-3 border-l border-white/10">
+          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1A237E] to-[#00E5FF] flex items-center justify-center">
+            <User className="w-4 h-4 text-white" />
           </div>
-          <ChevronDown className="w-4 h-4 text-slate-400" />
+          <span className="text-sm text-slate-300">Sarah Chen</span>
         </div>
       </div>
     </header>
-  );
+  )
 }
 
-function KPICard({ icon: Icon, label, value, delta, prefix = '', suffix = '', delay = 0 }) {
-  const [count, setCount] = useState(0);
-  const target = value;
+function KPICard({ icon: Icon, label, value, delta, prefix, suffix, delay }) {
+  const [count, setCount] = useState(0)
+  const [isVisible, setIsVisible] = useState(false)
+  const ref = useRef(null)
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      const duration = 1500;
-      const steps = 60;
-      const increment = target / steps;
-      let current = 0;
-      const interval = setInterval(() => {
-        current += increment;
-        if (current >= target) {
-          setCount(target);
-          clearInterval(interval);
-        } else {
-          setCount(Math.floor(current));
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.disconnect()
         }
-      }, duration / steps);
-      return () => clearInterval(interval);
-    }, delay * 200);
-    return () => clearTimeout(timeout);
-  }, [target, delay]);
+      },
+      { threshold: 0.1 }
+    )
+    if (ref.current) observer.observe(ref.current)
+    return () => observer.disconnect()
+  }, [])
 
-  const isPositive = delta >= 0;
+  useEffect(() => {
+    if (!isVisible) return
+    const numericValue = Number(value.replace(/[^0-9]/g, ''))
+    const duration = 1500
+    const steps = 60
+    const increment = numericValue / steps
+    let current = 0
+    const timer = setInterval(() => {
+      current += increment
+      if (current >= numericValue) {
+        setCount(numericValue)
+        clearInterval(timer)
+      } else {
+        setCount(Math.floor(current))
+      }
+    }, duration / steps)
+    return () => clearInterval(timer)
+  }, [isVisible, value])
+
+  const isPositive = delta.startsWith('+')
+
   return (
-    <div className="glass p-5 fade-in" style={{ animationDelay: `${delay * 0.1}s` }}>
-      <div className="flex items-center justify-between mb-3">
-        <div className="p-2 rounded-lg bg-white/5">
-          <Icon className="w-5 h-5 text-[#00C9A7]" />
+    <div ref={ref} className="glass p-5 fade-in" style={{animationDelay: `${delay}ms`}}>
+      <div className="flex items-center justify-between mb-4">
+        <div className="w-10 h-10 rounded-lg bg-white/5 flex items-center justify-center">
+          <Icon className="w-5 h-5 text-[#00E5FF]" />
         </div>
-        <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
-          isPositive ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+        <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${
+          isPositive ? 'text-green-400 bg-green-400/10' : 'text-red-400 bg-red-400/10'
         }`}>
           {isPositive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-          {Math.abs(delta)}%
-        </span>
+          {delta}
+        </div>
       </div>
-      <p className="text-sm text-slate-400 mb-1">{label}</p>
-      <p className="text-2xl font-bold text-white">{prefix}{count.toLocaleString()}{suffix}</p>
+      <div className="text-xs text-slate-400 uppercase tracking-wider mb-1">{label}</div>
+      <div className="text-2xl font-bold text-white">
+        {prefix}{count.toLocaleString()}{suffix}
+      </div>
     </div>
-  );
+  )
 }
 
-function LineChart() {
-  const data = useMemo(() => [
-    { day: 'Mon', value: 820 },
-    { day: 'Tue', value: 945 },
-    { day: 'Wed', value: 1100 },
-    { day: 'Thu', value: 1280 },
-    { day: 'Fri', value: 1430 },
-    { day: 'Sat', value: 1510 },
-    { day: 'Sun', value: 1680 },
-  ], []);
+function LineChart({ data, height = 200 }) {
+  const [animate, setAnimate] = useState(false)
+  const chartRef = useRef(null)
 
-  const svgWidth = 400;
-  const svgHeight = 200;
-  const padding = 30;
-  const chartWidth = svgWidth - padding * 2;
-  const chartHeight = svgHeight - padding * 2;
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => setAnimate(true), 300)
+          observer.disconnect()
+        }
+      },
+      { threshold: 0.1 }
+    )
+    if (chartRef.current) observer.observe(chartRef.current)
+    return () => observer.disconnect()
+  }, [])
 
-  const maxValue = Math.max(...data.map(d => d.value));
-  const minValue = Math.min(...data.map(d => d.value));
-  const valueRange = maxValue - minValue || 1;
+  const values = (data || []).map(d => d.value)
+  const max = Math.max(...values)
+  const min = Math.min(...values)
+  const range = max - min || 1
+  const width = 100 / (data.length - 1)
 
-  const points = data.map((d, i) => ({
-    x: padding + (i / (data.length - 1)) * chartWidth,
-    y: padding + chartHeight - ((d.value - minValue) / valueRange) * chartHeight,
-  }));
+  const points = (data || []).map((d, i) => {
+    const x = i * width
+    const y = 100 - ((d.value - min) / range) * 80 - 10
+    return `${x},${y}`
+  }).join(' ')
 
-  const pathD = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-  const areaD = `${pathD} L ${points[points.length - 1].x} ${padding + chartHeight} L ${points[0].x} ${padding + chartHeight} Z`;
+  const areaPoints = `0,${height} ` + (data || []).map((d, i) => {
+    const x = i * width
+    const y = 100 - ((d.value - min) / range) * 80 - 10
+    return `${x},${y}`
+  }).join(' ') + ` ${(data.length - 1) * width},${height}`
 
   return (
-    <div className="glass p-5 fade-in">
+    <div ref={chartRef} className="glass p-5">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-medium text-slate-300">Ranking Trend (7 Days)</h3>
-        <span className="text-xs text-[#00C9A7] bg-[#00C9A7]/10 px-2 py-0.5 rounded-full">+12.4%</span>
+        <h3 className="text-sm font-medium text-slate-300">Ranking Performance</h3>
+        <span className="text-xs text-slate-500">Last 7 days</span>
       </div>
-      <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-48">
+      <svg viewBox={`0 0 ${(data.length - 1) * 100} 100`} className="w-full" style={{ height }}>
         <defs>
-          <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#00C9A7" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#00C9A7" stopOpacity="0" />
+          <linearGradient id="areaGradient" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#00E5FF" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#00E5FF" stopOpacity="0" />
           </linearGradient>
         </defs>
-        <path d={areaD} fill="url(#chartGradient)" className="animate-pulse" />
-        <path d={pathD} fill="none" stroke="#00C9A7" strokeWidth="2" strokeLinecap="round" className="animate-dash" />
-        {points.map((p, i) => (
-          <circle key={i} cx={p.x} cy={p.y} r="3" fill="#00C9A7" className="animate-ping" style={{ animationDelay: `${i * 0.1}s` }} />
-        ))}
-        {data.map((d, i) => (
-          <text key={i} x={points[i].x} y={svgHeight - 5} textAnchor="middle" fill="#64748b" fontSize="10">
-            {d.day}
-          </text>
+        <polygon
+          points={areaPoints}
+          fill="url(#areaGradient)"
+          style={{ transition: 'opacity 0.8s ease', opacity: animate ? 1 : 0 }}
+        />
+        <polyline
+          points={points}
+          fill="none"
+          stroke="#00E5FF"
+          strokeWidth="2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          style={{ transition: 'stroke-dashoffset 1.5s ease-in-out' }}
+          strokeDasharray={animate ? '1000' : '0'}
+          strokeDashoffset={animate ? '0' : '1000'}
+        />
+        {(data || []).map((d, i) => (
+          <circle
+            key={i}
+            cx={i * width}
+            cy={100 - ((d.value - min) / range) * 80 - 10}
+            r="3"
+            fill="#00E5FF"
+            className="cursor-pointer hover:r-5 transition-all"
+            style={{ transition: 'opacity 0.5s ease', opacity: animate ? 1 : 0, transitionDelay: `${i * 100}ms` }}
+          />
         ))}
       </svg>
-    </div>
-  );
-}
-
-function BarChart() {
-  const data = useMemo(() => [
-    { label: 'Product A', value: 85, color: '#00C9A7' },
-    { label: 'Product B', value: 72, color: '#00C9A7' },
-    { label: 'Product C', value: 95, color: '#1E3A5F' },
-    { label: 'Product D', value: 65, color: '#00C9A7' },
-    { label: 'Product E', value: 78, color: '#1E3A5F' },
-  ], []);
-
-  const maxValue = 100;
-  const barHeight = 200;
-
-  return (
-    <div className="glass p-5 fade-in">
-      <h3 className="text-sm font-medium text-slate-300 mb-4">Keyword Difficulty Score</h3>
-      <div className="flex items-end justify-between gap-4 h-48">
-        {data.map((item, i) => (
-          <div key={i} className="flex-1 flex flex-col items-center gap-2">
-            <span className="text-xs text-slate-400 font-medium">{item.value}%</span>
-            <div
-              className="w-full rounded-t-lg transition-all duration-1000"
-              style={{
-                height: `${(item.value / maxValue) * barHeight}px`,
-                background: `linear-gradient(to top, ${item.color}, ${item.color}88)`,
-                opacity: 0.8 + (item.value / 100) * 0.2,
-              }}
-            />
-            <span className="text-xs text-slate-500 truncate w-full text-center">{item.label}</span>
-          </div>
+      <div className="flex justify-between mt-2">
+        {(data || []).map((d, i) => (
+          <span key={i} className="text-xs text-slate-500">{d.label}</span>
         ))}
       </div>
     </div>
-  );
+  )
 }
 
-function DataTable() {
-  const [data, setData] = useState([
-    { keyword: 'organic skincare', volume: 14200, difficulty: 45, position: 3, trend: 'up' },
-    { keyword: 'natural face serum', volume: 8300, difficulty: 62, position: 7, trend: 'down' },
-    { keyword: 'vegan moisturizer', volume: 5600, difficulty: 38, position: 1, trend: 'up' },
-    { keyword: 'clean beauty routine', volume: 12400, difficulty: 71, position: 12, trend: 'up' },
-    { keyword: 'sustainable cosmetics', volume: 9800, difficulty: 55, position: 5, trend: 'down' },
-  ]);
-  const [sortKey, setSortKey] = useState('position');
-  const [sortDir, setSortDir] = useState('asc');
+function DataTable({ data, columns }) {
+  const [sortKey, setSortKey] = useState(columns?.[0]?.key || '')
+  const [sortAsc, setSortAsc] = useState(true)
 
-  const sortedData = useMemo(() => {
-    return [...data].sort((a, b) => {
-      const aVal = a[sortKey];
-      const bVal = b[sortKey];
+  const sorted = useMemo(() => {
+    if (!sortKey) return data || []
+    return [...(data || [])].sort((a, b) => {
+      const aVal = a[sortKey]
+      const bVal = b[sortKey]
       if (typeof aVal === 'string') {
-        return sortDir === 'asc' ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal);
+        return sortAsc ? aVal.localeCompare(bVal) : bVal.localeCompare(aVal)
       }
-      return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
-    });
-  }, [data, sortKey, sortDir]);
+      return sortAsc ? aVal - bVal : bVal - aVal
+    })
+  }, [data, sortKey, sortAsc])
 
   const handleSort = (key) => {
-    if (sortKey === key) {
-      setSortDir(prev => prev === 'asc' ? 'desc' : 'asc');
+    if (key === sortKey) {
+      setSortAsc(!sortAsc)
     } else {
-      setSortKey(key);
-      setSortDir('asc');
+      setSortKey(key)
+      setSortAsc(true)
     }
-  };
+  }
 
   return (
-    <div className="glass p-5 fade-in overflow-hidden">
-      <h3 className="text-sm font-medium text-slate-300 mb-4">Keyword Rankings</h3>
+    <div className="glass overflow-hidden">
       <div className="overflow-x-auto">
-        <table className="w-full text-sm">
+        <table className="w-full">
           <thead>
             <tr className="border-b border-white/5">
-              {['keyword', 'volume', 'difficulty', 'position', 'trend'].map((col) => (
+              {(columns || []).map(col => (
                 <th
-                  key={col}
-                  onClick={() => handleSort(col)}
-                  className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer hover:text-white transition-colors"
+                  key={col.key}
+                  onClick={() => handleSort(col.key)}
+                  className="px-4 py-3 text-left text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-200 transition-colors"
                 >
                   <div className="flex items-center gap-1">
-                    {col}
-                    {sortKey === col && (
-                      <span className="text-[#00C9A7]">{sortDir === 'asc' ? '↑' : '↓'}</span>
+                    {col.label}
+                    {sortKey === col.key && (
+                      sortAsc ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />
                     )}
                   </div>
                 </th>
@@ -371,273 +329,390 @@ function DataTable() {
             </tr>
           </thead>
           <tbody>
-            {(sortedData || []).map((row, i) => (
+            {(sorted || []).map((row, i) => (
               <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                <td className="px-4 py-3 text-white font-medium">{row.keyword}</td>
-                <td className="px-4 py-3 text-slate-300">{row.volume.toLocaleString()}</td>
-                <td className="px-4 py-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-16 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full rounded-full bg-[#00C9A7]" style={{ width: `${row.difficulty}%` }} />
-                    </div>
-                    <span className="text-slate-400 text-xs">{row.difficulty}%</span>
-                  </div>
-                </td>
-                <td className="px-4 py-3">
-                  <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                    row.position <= 3 ? 'bg-green-500/10 text-green-400' :
-                    row.position <= 10 ? 'bg-yellow-500/10 text-yellow-400' :
-                    'bg-red-500/10 text-red-400'
-                  }`}>
-                    #{row.position}
-                  </span>
-                </td>
-                <td className="px-4 py-3">
-                  {row.trend === 'up' ? (
-                    <ArrowUpRight className="w-4 h-4 text-green-400" />
-                  ) : (
-                    <ArrowDownRight className="w-4 h-4 text-red-400" />
-                  )}
-                </td>
+                {(columns || []).map(col => (
+                  <td key={col.key} className="px-4 py-3 text-sm text-slate-300">
+                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                  </td>
+                ))}
               </tr>
             ))}
           </tbody>
         </table>
       </div>
     </div>
-  );
+  )
 }
 
 function QuickActions() {
+  const [showForm, setShowForm] = useState(false)
+  const [formData, setFormData] = useState({ keyword: '', campaign: '' })
+  const [errors, setErrors] = useState({})
+  const [toast, setToast] = useState(null)
+
+  const validate = () => {
+    const errs = {}
+    if (!formData.keyword.trim()) errs.keyword = 'Keyword is required'
+    if (!formData.campaign.trim()) errs.campaign = 'Campaign name is required'
+    setErrors(errs)
+    return Object.keys(errs).length === 0
+  }
+
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    if (!validate()) return
+    setToast({ type: 'success', message: `Added "${formData.keyword}" to "${formData.campaign}"` })
+    setFormData({ keyword: '', campaign: '' })
+    setShowForm(false)
+    setTimeout(() => setToast(null), 3000)
+  }
+
+  const actions = [
+    { icon: Target, label: 'Add Keyword', onClick: () => setShowForm(true) },
+    { icon: FileText, label: 'Generate Content', onClick: () => setToast({ type: 'info', message: 'Content generation queued' }) },
+    { icon: Globe, label: 'Start Outreach', onClick: () => setToast({ type: 'info', message: 'Outreach campaign initiated' }) },
+    { icon: RefreshCw, label: 'Update Rankings', onClick: () => setToast({ type: 'info', message: 'Ranking update in progress' }) },
+  ]
+
   return (
-    <div className="glass p-5 fade-in">
-      <h3 className="text-sm font-medium text-slate-300 mb-4">Quick Actions</h3>
-      <div className="space-y-3">
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group">
-          <Search className="w-5 h-5 text-[#00C9A7] group-hover:scale-110 transition-transform" />
-          <div className="text-left">
-            <p className="text-sm font-medium text-white">New Keyword Research</p>
-            <p className="text-xs text-slate-400">Discover untapped opportunities</p>
-          </div>
-        </button>
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group">
-          <FileText className="w-5 h-5 text-[#00C9A7] group-hover:scale-110 transition-transform" />
-          <div className="text-left">
-            <p className="text-sm font-medium text-white">Generate Content</p>
-            <p className="text-xs text-slate-400">AI-powered SEO articles</p>
-          </div>
-        </button>
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group">
-          <Link className="w-5 h-5 text-[#00C9A7] group-hover:scale-110 transition-transform" />
-          <div className="text-left">
-            <p className="text-sm font-medium text-white">Build Backlinks</p>
-            <p className="text-xs text-slate-400">Outreach & link building</p>
-          </div>
-        </button>
-        <button className="w-full flex items-center gap-3 px-4 py-3 rounded-lg bg-white/5 hover:bg-white/10 transition-all duration-200 group">
-          <Mail className="w-5 h-5 text-[#00C9A7] group-hover:scale-110 transition-transform" />
-          <div className="text-left">
-            <p className="text-sm font-medium text-white">Send Report</p>
-            <p className="text-xs text-slate-400">Share with stakeholders</p>
-          </div>
-        </button>
+    <div className="space-y-4">
+      <h3 className="text-sm font-medium text-slate-300">Quick Actions</h3>
+      <div className="grid grid-cols-2 gap-3">
+        {actions.map((action, i) => (
+          <button
+            key={i}
+            onClick={action.onClick}
+            className="glass p-4 flex flex-col items-center gap-2 hover:bg-white/10 transition-all duration-200 group cursor-pointer"
+          >
+            <action.icon className="w-6 h-6 text-slate-400 group-hover:text-[#00E5FF] transition-colors" />
+            <span className="text-xs text-slate-400 group-hover:text-slate-200 transition-colors">{action.label}</span>
+          </button>
+        ))}
       </div>
+
+      {showForm && (
+        <form onSubmit={handleSubmit} className="glass p-4 space-y-3">
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">Keyword</label>
+            <input
+              type="text"
+              value={formData.keyword}
+              onChange={(e) => setFormData({...formData, keyword: e.target.value})}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#00E5FF]/50"
+              placeholder="e.g. SEO tools"
+            />
+            {errors.keyword && <span className="text-xs text-red-400 mt-1">{errors.keyword}</span>}
+          </div>
+          <div>
+            <label className="block text-xs text-slate-400 mb-1">Campaign</label>
+            <input
+              type="text"
+              value={formData.campaign}
+              onChange={(e) => setFormData({...formData, campaign: e.target.value})}
+              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#00E5FF]/50"
+              placeholder="e.g. Q4 Growth"
+            />
+            {errors.campaign && <span className="text-xs text-red-400 mt-1">{errors.campaign}</span>}
+          </div>
+          <button type="submit" className="w-full bg-gradient-to-r from-[#1A237E] to-[#00E5FF] text-white text-sm font-medium py-2 rounded-lg hover:opacity-90 transition-opacity">
+            Add Keyword
+          </button>
+        </form>
+      )}
+
+      {toast && (
+        <div className={`fixed bottom-4 right-4 px-4 py-3 rounded-lg text-sm shadow-lg fade-in ${
+          toast.type === 'success' ? 'bg-green-500/20 border border-green-500/30 text-green-300' :
+          'bg-blue-500/20 border border-blue-500/30 text-blue-300'
+        }`}>
+          <div className="flex items-center gap-2">
+            {toast.type === 'success' ? <CheckCircle className="w-4 h-4" /> : <AlertCircle className="w-4 h-4" />}
+            {toast.message}
+          </div>
+        </div>
+      )}
     </div>
-  );
+  )
 }
 
-function RealAnalysis({ url }) {
-  const [analysis, setAnalysis] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+function Dashboard() {
+  const [data, setData] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    if (!url) return;
-    setLoading(true);
-    setError(null);
-
-    const fetchAnalysis = async () => {
-      try {
-        const data = await apiFetch(`/api/analyze?url=${encodeURIComponent(url)}`);
-        if (data) {
-          setAnalysis(data);
-        } else {
-          setAnalysis({
-            seo_score: 0,
-            load_time: 0,
-            page_size: 0,
-            backlinks: 0,
-            keywords_count: 0,
-            issues: ['No se pudo obtener el análisis real, revisa la URL o la conexión con el backend.']
-          });
-        }
-      } catch (e) {
-        setError('Error al conectar con el servicio de análisis.');
-      } finally {
-        setLoading(false);
+    async function load() {
+      const result = await apiFetch('/api/dashboard')
+      if (result) {
+        setData(result)
+      } else {
+        setData({
+          kpis: [
+            { label: 'Keywords Tracked', value: 15420, delta: '+12.5%', icon: Target, prefix: '', suffix: '' },
+            { label: 'Avg. Position', value: 3.2, delta: '-8.3%', icon: TrendingUp, prefix: '#', suffix: '' },
+            { label: 'Backlinks Built', value: 8947, delta: '+23.1%', icon: Globe, prefix: '', suffix: '' },
+            { label: 'Conversion Rate', value: 4.8, delta: '+5.2%', icon: Activity, prefix: '', suffix: '%' },
+          ],
+          chartData: [
+            { label: 'Mon', value: 4.2 },
+            { label: 'Tue', value: 3.8 },
+            { label: 'Wed', value: 3.5 },
+            { label: 'Thu', value: 3.1 },
+            { label: 'Fri', value: 2.9 },
+            { label: 'Sat', value: 2.7 },
+            { label: 'Sun', value: 2.5 },
+          ],
+          activities: [
+            { keyword: 'SEO tools', position: 3, change: '+2', campaign: 'SEO Growth', status: 'Improved' },
+            { keyword: 'content marketing', position: 5, change: '-1', campaign: 'Content Push', status: 'Declined' },
+            { keyword: 'link building', position: 2, change: '+1', campaign: 'Backlink Boost', status: 'Improved' },
+            { keyword: 'keyword research', position: 7, change: '+3', campaign: 'Keyword Focus', status: 'Improved' },
+            { keyword: 'Google rankings', position: 4, change: '0', campaign: 'Rank Tracker', status: 'Stable' },
+          ]
+        })
       }
-    };
-    fetchAnalysis();
-  }, [url]);
+      setLoading(false)
+    }
+    load()
+  }, [])
 
   if (loading) {
-    return <div className="glass p-5 text-center text-slate-400"><Activity className="w-6 h-6 animate-pulse mx-auto mb-2" />Analizando...</div>;
+    return (
+      <main className="flex-1 overflow-y-auto p-6 space-y-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+          {[1,2,3,4].map(i => (
+            <div key={i} className="glass p-5 shimmer"></div>
+          ))}
+        </div>
+        <div className="glass p-5 shimmer h-[300px]"></div>
+        <div className="glass p-5 shimmer h-[200px]"></div>
+      </main>
+    )
   }
-  if (error) {
-    return <div className="glass p-5 text-center text-red-400">{error}</div>;
-  }
-  if (!analysis) return null;
+
+  const kpis = data?.kpis || []
+  const chartData = data?.chartData || []
+  const activities = data?.activities || []
+
+  const columns = [
+    { key: 'keyword', label: 'Keyword', render: (val) => <span className="font-medium text-white">{val}</span> },
+    { key: 'position', label: 'Position', render: (val) => `#${val}` },
+    { key: 'change', label: 'Change', render: (val) => (
+      <span className={`px-2 py-0.5 rounded text-xs font-medium ${
+        val.startsWith('+') ? 'text-green-400 bg-green-400/10' : 
+        val.startsWith('-') ? 'text-red-400 bg-red-400/10' : 
+        'text-slate-400 bg-white/5'
+      }`}>
+        {val}
+      </span>
+    )},
+    { key: 'campaign', label: 'Campaign' },
+    { key: 'status', label: 'Status', render: (val) => (
+      <span className={`flex items-center gap-1 ${val === 'Improved' ? 'text-green-400' : val === 'Declined' ? 'text-red-400' : 'text-slate-400'}`}>
+        {val === 'Improved' ? <CheckCircle className="w-3 h-3" /> : val === 'Declined' ? <AlertCircle className="w-3 h-3" /> : <Clock className="w-3 h-3" />}
+        {val}
+      </span>
+    )},
+  ]
 
   return (
-    <div className="glass p-5 fade-in">
-      <h3 className="text-sm font-medium text-slate-300 mb-4">Análisis SEO Real para: <span className="text-white truncate inline-block max-w-[200px] align-bottom">{url}</span></h3>
-      <div className="grid grid-cols-2 gap-4">
-        <div className="bg-white/5 p-3 rounded-lg">
-          <p className="text-xs text-slate-400">SEO Score</p>
-          <p className="text-lg font-bold text-white">{analysis.seo_score}/100</p>
+    <main className="flex-1 overflow-y-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold gradient-text">Dashboard</h1>
+        <p className="text-sm text-slate-400 mt-1">Your SEO performance at a glance</p>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        {(kpis || []).map((kpi, i) => (
+          <KPICard
+            key={i}
+            icon={kpi.icon}
+            label={kpi.label}
+            value={kpi.value.toString()}
+            delta={kpi.delta}
+            prefix={kpi.prefix}
+            suffix={kpi.suffix}
+            delay={i * 100}
+          />
+        ))}
+      </div>
+
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 mb-6">
+        <div className="xl:col-span-2">
+          <LineChart data={chartData} height={200} />
         </div>
-        <div className="bg-white/5 p-3 rounded-lg">
-          <p className="text-xs text-slate-400">Tiempo de carga</p>
-          <p className="text-lg font-bold text-white">{analysis.load_time} ms</p>
-        </div>
-        <div className="bg-white/5 p-3 rounded-lg">
-          <p className="text-xs text-slate-400">Tamaño página</p>
-          <p className="text-lg font-bold text-white">{analysis.page_size} KB</p>
-        </div>
-        <div className="bg-white/5 p-3 rounded-lg">
-          <p className="text-xs text-slate-400">Backlinks</p>
-          <p className="text-lg font-bold text-white">{analysis.backlinks}</p>
+        <div>
+          <QuickActions />
         </div>
       </div>
-      <div className="mt-3">
-        <p className="text-xs text-slate-400 mb-1">Palabras clave detectadas: {analysis.keywords_count}</p>
-        {analysis.issues && analysis.issues.length > 0 && (
-          <div className="mt-2">
-            <p className="text-xs text-red-400 mb-1">Problemas encontrados:</p>
-            <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
-              {analysis.issues.map((issue, idx) => (
-                <li key={idx}>{issue}</li>
-              ))}
-            </ul>
+
+      <div>
+        <h3 className="text-sm font-medium text-slate-300 mb-3">Recent Activity</h3>
+        <DataTable data={activities} columns={columns} />
+      </div>
+    </main>
+  )
+}
+
+function Analytics() {
+  return (
+    <main className="flex-1 overflow-y-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold gradient-text">Analytics</h1>
+        <p className="text-sm text-slate-400 mt-1">Deep dive into your SEO metrics</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="glass p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Traffic Sources</h3>
+          <div className="space-y-3">
+            {[
+              { source: 'Organic Search', percentage: 65, color: 'from-[#1A237E] to-[#00E5FF]' },
+              { source: 'Direct', percentage: 20, color: 'from-[#00E5FF] to-[#1A237E]' },
+              { source: 'Referral', percentage: 10, color: 'from-purple-500 to-pink-500' },
+              { source: 'Social', percentage: 5, color: 'from-blue-400 to-cyan-400' },
+            ].map((item, i) => (
+              <div key={i}>
+                <div className="flex justify-between text-xs text-slate-400 mb-1">
+                  <span>{item.source}</span>
+                  <span>{item.percentage}%</span>
+                </div>
+                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                  <div className={`h-full rounded-full bg-gradient-to-r ${item.color} transition-all duration-1000`} style={{ width: `${item.percentage}%` }}></div>
+                </div>
+              </div>
+            ))}
           </div>
-        )}
+        </div>
+        <div className="glass p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Top Keywords by Traffic</h3>
+          <div className="space-y-2">
+            {['SEO optimization tools', 'content marketing strategy', 'link building services', 'keyword research tool', 'Google ranking factors'].map((kw, i) => (
+              <div key={i} className="flex items-center justify-between py-2 border-b border-white/5 last:border-0">
+                <span className="text-sm text-slate-300">{kw}</span>
+                <span className="text-xs text-slate-500">{(5000 - i * 800).toLocaleString()} visits</span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
-    </div>
-  );
+    </main>
+  )
+}
+
+function Reports() {
+  return (
+    <main className="flex-1 overflow-y-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold gradient-text">Reports</h1>
+        <p className="text-sm text-slate-400 mt-1">Generated SEO reports and insights</p>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {['Weekly SEO Report', 'Keyword Performance', 'Backlink Analysis', 'Competitor Research', 'Content Gap Analysis', 'ROI Summary'].map((report, i) => (
+          <div key={i} className="glass p-5 cursor-pointer hover:bg-white/5 transition-all duration-200">
+            <div className="flex items-center gap-3 mb-3">
+              <FileText className="w-5 h-5 text-[#00E5FF]" />
+              <h3 className="text-sm font-medium text-slate-200">{report}</h3>
+            </div>
+            <p className="text-xs text-slate-400">Generated: Oct {15 + i}, 2024</p>
+            <div className="mt-3 flex items-center gap-2 text-xs text-[#00E5FF]">
+              <ExternalLink className="w-3 h-3" />
+              <span>View Report</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </main>
+  )
+}
+
+function Settings() {
+  const [apiKey, setApiKey] = useState('sk-...abc123')
+  const [saved, setSaved] = useState(false)
+
+  return (
+    <main className="flex-1 overflow-y-auto p-6">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold gradient-text">Settings</h1>
+        <p className="text-sm text-slate-400 mt-1">Manage your account and integrations</p>
+      </div>
+      <div className="max-w-2xl space-y-6">
+        <div className="glass p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">API Configuration</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs text-slate-400 mb-1">API Key</label>
+              <div className="flex gap-2">
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => setApiKey(e.target.value)}
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#00E5FF]/50"
+                />
+                <button
+                  onClick={() => {
+                    setSaved(true)
+                    setTimeout(() => setSaved(false), 2000)
+                  }}
+                  className="px-4 py-2 bg-gradient-to-r from-[#1A237E] to-[#00E5FF] text-white text-sm rounded-lg hover:opacity-90 transition-opacity"
+                >
+                  {saved ? 'Saved!' : 'Save'}
+                </button>
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-slate-400 mb-1">Webhook URL</label>
+              <input
+                type="text"
+                defaultValue="https://api.stellarseo.com/webhooks/v1"
+                className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-[#00E5FF]/50"
+              />
+            </div>
+          </div>
+        </div>
+        <div className="glass p-5">
+          <h3 className="text-sm font-medium text-slate-300 mb-4">Notification Preferences</h3>
+          <div className="space-y-3">
+            {['Ranking changes', 'Content generation complete', 'New backlinks detected', 'Weekly report ready'].map((pref, i) => (
+              <label key={i} className="flex items-center gap-3 cursor-pointer">
+                <input type="checkbox" defaultChecked={i < 2} className="accent-[#00E5FF]" />
+                <span className="text-sm text-slate-300">{pref}</span>
+              </label>
+            ))}
+          </div>
+        </div>
+      </div>
+    </main>
+  )
 }
 
 export default function App() {
-  const [activeView, setActiveView] = useState('dashboard');
-  const [notificationCount, setNotificationCount] = useState(0);
-  const [cssInjected, setCssInjected] = useState(false);
-  const [showLanding, setShowLanding] = useState(true);
-  const [analysisUrl, setAnalysisUrl] = useState('https://stellar-ai.vercel.app');
-  const [inputUrl, setInputUrl] = useState('https://stellar-ai.vercel.app');
+  const [activeView, setActiveView] = useState('dashboard')
 
+  const styleInjected = useRef(false)
   useEffect(() => {
-    if (!cssInjected) {
-      const style = document.createElement('style');
-      style.textContent = `
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-        :root { --accent: #00C9A7; --accent2: #1E3A5F; }
-        .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
-        .gradient-text { background: linear-gradient(135deg, #00C9A7, #1E3A5F, #6366F1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-        .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-        @keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
-        @keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
-        .fade-in { animation: fadeIn 0.3s ease forwards; }
-        @keyframes dash { to { stroke-dashoffset: 0; } }
-        .animate-dash { stroke-dasharray: 1000; stroke-dashoffset: 1000; animation: dash 2s ease forwards; }
-      `;
-      document.head.appendChild(style);
-      setCssInjected(true);
+    if (!styleInjected.current) {
+      injectStyles()
+      styleInjected.current = true
     }
-  }, [cssInjected]);
+  }, [])
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const result = await apiFetch('/api/notifications');
-      if (result && result.count !== undefined) {
-        setNotificationCount(result.count);
-      } else {
-        setNotificationCount(5);
-      }
-    };
-    fetchData();
-  }, []);
-
-  if (showLanding) {
-    return <LandingPage onStart={() => setShowLanding(false)} />;
+  const renderView = () => {
+    switch(activeView) {
+      case 'dashboard': return <Dashboard />
+      case 'analytics': return <Analytics />
+      case 'reports': return <Reports />
+      case 'settings': return <Settings />
+      default: return <Dashboard />
+    }
   }
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#06080f] text-slate-100 font-[Inter]">
-      <Sidebar activeView={activeView} onNavigate={setActiveView} />
+      <Sidebar activeView={activeView} setActiveView={setActiveView} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar notificationCount={notificationCount} />
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center justify-between mb-6">
-              <div>
-                <h2 className="text-2xl font-bold gradient-text">SEO Command Center</h2>
-                <p className="text-sm text-slate-400 mt-1">AI-driven insights for your e-commerce rankings</p>
-              </div>
-              <div className="flex items-center gap-3">
-                <button 
-                  onClick={() => setAnalysisUrl(inputUrl)}
-                  className="px-4 py-2 text-sm font-medium text-white bg-[#00C9A7] hover:bg-[#00C9A7]/90 rounded-lg transition-all duration-200"
-                >
-                  Run Audit
-                </button>
-                <button className="px-4 py-2 text-sm font-medium text-slate-300 bg-white/5 hover:bg-white/10 rounded-lg border border-white/5 transition-all duration-200">
-                  Export
-                </button>
-              </div>
-            </div>
-
-            <div className="mb-4">
-              <div className="flex items-center gap-3">
-                <input 
-                  type="text" 
-                  value={inputUrl}
-                  onChange={(e) => setInputUrl(e.target.value)}
-                  placeholder="https://ejemplo.com"
-                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-[#00C9A7]/50 transition-colors"
-                />
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-              <KPICard icon={Search} label="Keywords Tracked" value={2847} delta={12.5} delay={0} />
-              <KPICard icon={TrendingUp} label="Avg. Position" value={3.2} delta={8.3} prefix=" #" suffix="" delay={1} />
-              <KPICard icon={BarChart3} label="Content Generated" value={156} delta={22.1} delay={2} />
-              <KPICard icon={Users} label="Backlinks Built" value={892} delta={-3.7} delay={3} />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-6">
-              <div className="lg:col-span-2">
-                <LineChart />
-              </div>
-              <div>
-                <BarChart />
-              </div>
-            </div>
-
-            <div className="mb-6">
-              <RealAnalysis url={analysisUrl} />
-            </div>
-
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-              <div className="lg:col-span-2">
-                <DataTable />
-              </div>
-              <div>
-                <QuickActions />
-              </div>
-            </div>
-          </div>
-        </main>
+        <TopBar />
+        {renderView()}
       </div>
     </div>
-  );
+  )
 }
