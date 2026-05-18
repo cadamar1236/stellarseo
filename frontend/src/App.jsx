@@ -446,11 +446,93 @@ function QuickActions() {
   );
 }
 
+function RealAnalysis({ url }) {
+  const [analysis, setAnalysis] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    if (!url) return;
+    setLoading(true);
+    setError(null);
+
+    const fetchAnalysis = async () => {
+      try {
+        const data = await apiFetch(`/api/analyze?url=${encodeURIComponent(url)}`);
+        if (data) {
+          setAnalysis(data);
+        } else {
+          setAnalysis({
+            seo_score: 0,
+            load_time: 0,
+            page_size: 0,
+            backlinks: 0,
+            keywords_count: 0,
+            issues: ['No se pudo obtener el análisis real, revisa la URL o la conexión con el backend.']
+          });
+        }
+      } catch (e) {
+        setError('Error al conectar con el servicio de análisis.');
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchAnalysis();
+  }, [url]);
+
+  if (loading) {
+    return <div className="glass p-5 text-center text-slate-400"><Activity className="w-6 h-6 animate-pulse mx-auto mb-2" />Analizando...</div>;
+  }
+  if (error) {
+    return <div className="glass p-5 text-center text-red-400">{error}</div>;
+  }
+  if (!analysis) return null;
+
+  return (
+    <div className="glass p-5 fade-in">
+      <h3 className="text-sm font-medium text-slate-300 mb-4">Análisis SEO Real para: <span className="text-white truncate inline-block max-w-[200px] align-bottom">{url}</span></h3>
+      <div className="grid grid-cols-2 gap-4">
+        <div className="bg-white/5 p-3 rounded-lg">
+          <p className="text-xs text-slate-400">SEO Score</p>
+          <p className="text-lg font-bold text-white">{analysis.seo_score}/100</p>
+        </div>
+        <div className="bg-white/5 p-3 rounded-lg">
+          <p className="text-xs text-slate-400">Tiempo de carga</p>
+          <p className="text-lg font-bold text-white">{analysis.load_time} ms</p>
+        </div>
+        <div className="bg-white/5 p-3 rounded-lg">
+          <p className="text-xs text-slate-400">Tamaño página</p>
+          <p className="text-lg font-bold text-white">{analysis.page_size} KB</p>
+        </div>
+        <div className="bg-white/5 p-3 rounded-lg">
+          <p className="text-xs text-slate-400">Backlinks</p>
+          <p className="text-lg font-bold text-white">{analysis.backlinks}</p>
+        </div>
+      </div>
+      <div className="mt-3">
+        <p className="text-xs text-slate-400 mb-1">Palabras clave detectadas: {analysis.keywords_count}</p>
+        {analysis.issues && analysis.issues.length > 0 && (
+          <div className="mt-2">
+            <p className="text-xs text-red-400 mb-1">Problemas encontrados:</p>
+            <ul className="list-disc list-inside text-xs text-slate-300 space-y-1">
+              {analysis.issues.map((issue, idx) => (
+                <li key={idx}>{issue}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [activeView, setActiveView] = useState('dashboard');
   const [notificationCount, setNotificationCount] = useState(0);
   const [cssInjected, setCssInjected] = useState(false);
   const [showLanding, setShowLanding] = useState(true);
+  const [analysisUrl, setAnalysisUrl] = useState('https://stellar-ai.vercel.app');
+  const [inputUrl, setInputUrl] = useState('https://stellar-ai.vercel.app');
 
   useEffect(() => {
     if (!cssInjected) {
@@ -501,12 +583,27 @@ export default function App() {
                 <p className="text-sm text-slate-400 mt-1">AI-driven insights for your e-commerce rankings</p>
               </div>
               <div className="flex items-center gap-3">
-                <button className="px-4 py-2 text-sm font-medium text-white bg-[#00C9A7] hover:bg-[#00C9A7]/90 rounded-lg transition-all duration-200">
+                <button 
+                  onClick={() => setAnalysisUrl(inputUrl)}
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#00C9A7] hover:bg-[#00C9A7]/90 rounded-lg transition-all duration-200"
+                >
                   Run Audit
                 </button>
                 <button className="px-4 py-2 text-sm font-medium text-slate-300 bg-white/5 hover:bg-white/10 rounded-lg border border-white/5 transition-all duration-200">
                   Export
                 </button>
+              </div>
+            </div>
+
+            <div className="mb-4">
+              <div className="flex items-center gap-3">
+                <input 
+                  type="text" 
+                  value={inputUrl}
+                  onChange={(e) => setInputUrl(e.target.value)}
+                  placeholder="https://ejemplo.com"
+                  className="flex-1 bg-white/5 border border-white/10 rounded-lg px-4 py-2 text-sm text-white placeholder-slate-500 outline-none focus:border-[#00C9A7]/50 transition-colors"
+                />
               </div>
             </div>
 
@@ -524,6 +621,10 @@ export default function App() {
               <div>
                 <BarChart />
               </div>
+            </div>
+
+            <div className="mb-6">
+              <RealAnalysis url={analysisUrl} />
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
