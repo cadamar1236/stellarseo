@@ -2,31 +2,28 @@
   "app_type": "saas_dashboard",
   "app_name": "StellarSEO",
   "tagline": "Automated SEO that drives e-commerce brands to the top of Google.",
-  "primary_color": "#1A237E",
-  "accent_color": "#00E5FF",
+  "primary_color": "#1E3A8A",
+  "accent_color": "#F59E0B",
   "sections": [
+    "Dashboard",
     "Keyword Research",
     "Content Generation",
     "Link Building",
-    "Analytics & Reporting",
-    "Campaign Management",
-    "Client Dashboard",
-    "Settings & Integrations"
+    "Analytics & Reports"
   ],
   "backend_resources": [
-    "Keywords",
-    "Content",
-    "Links",
-    "Campaigns",
-    "Analytics",
-    "Users",
-    "Clients"
+    "users",
+    "projects",
+    "keywords",
+    "contents",
+    "backlinks",
+    "analytics"
   ],
   "features": [
-    "AI-powered keyword discovery and prioritization",
-    "Automated content creation with SEO optimization",
+    "AI-powered keyword research with competitive analysis",
+    "Automated content generation for product pages and blog posts",
     "Intelligent link building outreach and tracking",
-    "Real-time rank tracking and performance dashboards",
-    "Client management with white-label reporting"
+    "Real-time SEO performance dashboard and ranking reports",
+    "Integration with major e-commerce platforms"
   ]
 }
