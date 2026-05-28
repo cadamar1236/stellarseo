@@ -38,8 +38,25 @@ export default function App() {
 
   useEffect(() => {
     const style = document.createElement('style');
-    style.textContent = ':root { --accent: #00C9A7; --accent2: #1E3A5F; }';
-      document.head.appendChild(style);
+    style.textContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      :root { --accent: #00B4D8; --accent2: #1E3A5F; }
+      .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
+      .gradient-text { background: linear-gradient(135deg, #00B4D8, #1E3A5F, #6366F1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+      @keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+      @keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+      .fade-in { animation: fadeIn 0.3s ease forwards; }
+      @keyframes slideIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }
+      .slide-in { animation: slideIn 0.2s ease forwards; }
+      @keyframes pulse { 0%, 100% { opacity:1 } 50% { opacity:0.5 } }
+      .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+      .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+      .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+      .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+      .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    `;
+    document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
 
