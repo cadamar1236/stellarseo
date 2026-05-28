@@ -1,0 +1,103 @@
+/* styles.css – Styling for exit‑intent popup, stats widget and related components.
+   Uses the StellarSEO colour palette (primary #0F172A, accent #6366F1, text #f1f5f9).
+*/
+
+/* Overlay that dims the page */
+.exit-intent-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+/* Modal container */
+.exit-intent-modal {
+  background: var(--bg, #0F172A);
+  color: var(--text, #f1f5f9);
+  max-width: 420px;
+  width: 90%;
+  padding: 2rem 1.5rem;
+  border-radius: 0.75rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+  position: relative;
+  text-align: center;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+.exit-intent-close {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: transparent;
+  border: none;
+  color: #bbb;
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.exit-intent-badge {
+  width: 80px;
+  margin-bottom: 1rem;
+}
+
+.exit-intent-headline {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  line-height: 1.4;
+}
+
+.exit-intent-subheadline {
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+  color: #94a3b8; /* muted */
+}
+
+.exit-intent-cta {
+  display: inline-block;
+  background: #6366F1; /* accent */
+  color: #fff;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: background 0.2s;
+}
+
+.exit-intent-cta:hover {
+  background: #4f46e5;
+}
+
+.exit-intent-dismiss {
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 0.85rem;
+  text-decoration: underline;
+}
+
+/* Stats widget (bottom‑right corner) */
+.exit-intent-stats-widget {
+  position: fixed;
+  bottom: 1rem;
+  right: 1rem;
+  background: rgba(15, 23, 42, 0.85);
+  color: #f1f5f9;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  line-height: 1.4;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+}
+
+.exit-intent-stats-widget strong {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.25rem;
+}
