@@ -613,4 +613,80 @@ function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) 
                   {[
                     { key: 'date', label: 'Date' },
                     { key: 'task', label: 'Task' },
-                    { key: 'domain', label: '
+                    { key: 'domain', label: 'Domain' },
+                    { key: 'status', label: 'Status' },
+                    { key: 'keywords', label: 'Keywords' },
+                    { key: 'difficulty', label: 'Difficulty' },
+                  ].map((col) => (
+                    <th
+                      key={col.key}
+                      className="text-left py-2 px-3 text-[10px] font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:text-slate-300 transition-colors"
+                      onClick={() => handleSort(col.key)}
+                    >
+                      {col.label}
+                      <SortIcon field={col.key} />
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {sortedActivity.map((row, i) => (
+                  <tr key={row.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
+                    <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{row.date}</td>
+                    <td className="py-3 px-3 text-slate-200 font-medium">{row.task}</td>
+                    <td className="py-3 px-3 text-sky-400">{row.domain}</td>
+                    <td className="py-3 px-3">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                          row.status === 'Completed'
+                            ? 'bg-emerald-500/15 text-emerald-400'
+                            : row.status === 'Processing'
+                            ? 'bg-sky-500/15 text-sky-400'
+                            : 'bg-yellow-500/15 text-yellow-400'
+                        }`}
+                      >
+                        {row.status}
+                      </span>
+                    </td>
+                    <td className="py-3 px-3 text-slate-300">{row.keywords}</td>
+                    <td className="py-3 px-3">
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                          row.difficulty === 'Low'
+                            ? 'bg-emerald-500/15 text-emerald-400'
+                            : row.difficulty === 'Medium'
+                            ? 'bg-yellow-500/15 text-yellow-400'
+                            : 'bg-red-500/15 text-red-400'
+                        }`}
+                      >
+                        {row.difficulty}
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="space-y-4">
+          <div className="glass p-5 fade-in">
+            <h3 className="text-sm font-semibold text-slate-200 mb-4">Quick Actions</h3>
+            <div className="space-y-2">
+              {quickActions.map((action) => {
+                const Icon = action.icon;
+                return (
+                  <button
+                    key={action.id}
+                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-left group"
+                    onClick={() => showToast(`${action.label} started`, 'success')}
+                  >
+                    <div
+                      className={`w-9 h-9 rounded-lg ${action.color} flex items-center justify-center flex-shrink-0 group`}
+                    >
+                      <Icon className="w-4 h-4 text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-medium text-slate-200 truncate">{action.label}</p>
+                      <p className="text-[10px] text-s
