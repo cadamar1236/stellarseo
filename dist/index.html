@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>StellarSEO</title>
+  <title>StellarRank</title>
   <script>window.__BACKEND_URL__ = '/api/companies/StellarSEO/app';</script>
   <script>window.__COMPANY_SLUG__ = 'StellarSEO';</script>
   <!-- Show any JS errors visibly instead of a blank page -->
@@ -20,7 +20,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = {
-      theme: { extend: { colors: { primary: '#6366f1', accent: '#a78bfa' } } }
+      theme: { extend: { colors: { primary: '#1E3A5F', accent: '#00B4D8' } } }
     };
   </script>
   <!-- Library stubs: lucide-react icons, framer-motion, recharts -->
@@ -73,7 +73,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #06080f; color: #f1f5f9; font-family: system-ui, sans-serif; }
     ::-webkit-scrollbar { width: 6px; }
-    ::-webkit-scrollbar-thumb { background: #6366f1; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb { background: #1E3A5F; border-radius: 3px; }
     #root { min-height: 100vh; }
     #_cdn-loading { position:fixed;top:0;left:0;right:0;bottom:0;background:#06080f;
       display:flex;align-items:center;justify-content:center;z-index:9999;
@@ -81,7 +81,7 @@
   </style>
 </head>
 <body>
-<div id="_cdn-loading">Loading StellarSEO…</div>
+<div id="_cdn-loading">Loading StellarRank…</div>
 <div id="root"></div>
 <script type="text/babel" data-presets="react">
 const { useState, useEffect, useCallback, useMemo, useRef, createContext,
@@ -131,8 +131,25 @@ function App() {
 
   useEffect(() => {
     const style = document.createElement('style');
-    style.textContent = ':root { --accent: #00C9A7; --accent2: #1E3A5F; }';
-      document.head.appendChild(style);
+    style.textContent = `
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      :root { --accent: #00B4D8; --accent2: #1E3A5F; }
+      .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
+      .gradient-text { background: linear-gradient(135deg, #00B4D8, #1E3A5F, #6366F1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+      @keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
+      @keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
+      .fade-in { animation: fadeIn 0.3s ease forwards; }
+      @keyframes slideIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }
+      .slide-in { animation: slideIn 0.2s ease forwards; }
+      @keyframes pulse { 0%, 100% { opacity:1 } 50% { opacity:0.5 } }
+      .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
+      .scrollbar-thin::-webkit-scrollbar { width: 4px; }
+      .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
+      .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+      .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    `;
+    document.head.appendChild(style);
     return () => document.head.removeChild(style);
   }, []);
 
@@ -209,7 +226,7 @@ function App() {
   ];
 
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0F172A] text-slate-100">
+    <div className="flex h-screen overflow-hidden bg-[#06080f] text-slate-100">
       <Sidebar
         navItems={navItems}
         currentPage={currentPage}
@@ -228,7 +245,7 @@ function App() {
           setSidebarOpen={setSidebarOpen}
         />
 
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-thin bg-[#0F172A]">
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-thin bg-[#06080f]">
           {currentPage === 'dashboard' && (
             <DashboardContent
               kpiData={kpiData}
@@ -259,12 +276,12 @@ function Sidebar({ navItems, currentPage, setCurrentPage, sidebarOpen, setSideba
     >
       <div className="h-14 flex items-center px-4 border-b border-white/5">
         <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center flex-shrink-0">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00B4D8] to-[#1E3A5F] flex items-center justify-center flex-shrink-0">
             <ZapPanel className="w-4 h-4 text-white" />
           </div>
           {sidebarOpen && (
             <span className="font-semibold text-base whitespace-nowrap gradient-text">
-              StellarSEO
+              StellarRank
             </span>
           )}
         </div>
@@ -280,16 +297,16 @@ function Sidebar({ navItems, currentPage, setCurrentPage, sidebarOpen, setSideba
               onClick={() => setCurrentPage(item.id)}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
                 isActive
-                  ? 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
+                  ? 'bg-[#00B4D8]/15 text-[#00B4D8] border border-[#00B4D8]/20'
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               }`}
             >
-              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-sky-400' : ''}`} />
+              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[#00B4D8]' : ''}`} />
               {sidebarOpen && (
                 <span className="whitespace-nowrap truncate">{item.label}</span>
               )}
               {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-sky-400 rounded-r-full" />
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-[#00B4D8] rounded-r-full" />
               )}
             </button>
           );
@@ -300,7 +317,7 @@ function Sidebar({ navItems, currentPage, setCurrentPage, sidebarOpen, setSideba
         <div className={`glass p-3 ${!sidebarOpen && 'flex justify-center'}`}>
           {sidebarOpen ? (
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center flex-shrink-0">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4D8] to-[#1E3A5F] flex items-center justify-center flex-shrink-0">
                 <span className="text-xs font-bold text-white">JD</span>
               </div>
               <div className="flex-1 min-w-0">
@@ -310,7 +327,7 @@ function Sidebar({ navItems, currentPage, setCurrentPage, sidebarOpen, setSideba
               <ChevronDownPanel className="w-3 h-3 text-slate-500 flex-shrink-0" />
             </div>
           ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4D8] to-[#1E3A5F] flex items-center justify-center">
               <span className="text-xs font-bold text-white">JD</span>
             </div>
           )}
@@ -341,7 +358,7 @@ function TopBar({ searchQuery, setSearchQuery, notifications, setNotifications, 
   ];
 
   return (
-    <header className="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-white/5 flex-shrink-0 bg-[#0F172A]">
+    <header className="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-white/5 flex-shrink-0 bg-[#06080f]">
       <div className="flex items-center gap-4">
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -349,7 +366,7 @@ function TopBar({ searchQuery, setSearchQuery, notifications, setNotifications, 
         >
           {sidebarOpen ? <XPanel className="w-4 h-4" /> : <MenuPanel className="w-4 h-4" />}
         </button>
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 focus-within:border-sky-500/50 transition-all">
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 focus-within:border-[#00B4D8]/50 transition-all">
           <SearchPanel className="w-4 h-4 text-slate-500" />
           <input
             type="text"
@@ -369,7 +386,7 @@ function TopBar({ searchQuery, setSearchQuery, notifications, setNotifications, 
           >
             <BellPanel className="w-4 h-4" />
             {notifications > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-sky-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+              <span className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-[#00B4D8] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
                 {notifications}
               </span>
             )}
@@ -380,14 +397,14 @@ function TopBar({ searchQuery, setSearchQuery, notifications, setNotifications, 
                 <p className="text-xs font-semibold text-slate-300">Notifications</p>
                 <button
                   onClick={() => setNotifications(0)}
-                  className="text-[10px] text-sky-400 hover:text-sky-300"
+                  className="text-[10px] text-[#00B4D8] hover:text-[#00B4D8]/80"
                 >
                   Mark all read
                 </button>
               </div>
               {(dummyNotifs || []).slice(0, notifications).map((n) => (
                 <div key={n.id} className="flex items-start gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors">
-                  <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.unread ? 'bg-sky-500' : 'bg-slate-600'}`} />
+                  <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.unread ? 'bg-[#00B4D8]' : 'bg-slate-600'}`} />
                   <div className="flex-1 min-w-0">
                     <p className="text-xs text-slate-300 truncate">{n.text}</p>
                     <p className="text-[10px] text-slate-600 mt-0.5">{n.time}</p>
@@ -469,7 +486,7 @@ function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) 
 
   const SortIcon = ({ field }) => {
     if (sortField !== field) return <ArrowUpDown className="w-3 h-3 inline ml-1 opacity-30" />;
-    return sortDir === 'asc' ? <ArrowUpPanel className="w-3 h-3 inline ml-1 text-sky-400" /> : <ArrowDownPanel className="w-3 h-3 inline ml-1 text-sky-400" />;
+    return sortDir === 'asc' ? <ArrowUpPanel className="w-3 h-3 inline ml-1 text-[#00B4D8]" /> : <ArrowDownPanel className="w-3 h-3 inline ml-1 text-[#00B4D8]" />;
   };
 
   const maxVal = Math.max(...chartData.map((d) => Math.max(d.organic, d.paid)));
@@ -508,7 +525,7 @@ function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) 
           </button>
           <button
             onClick={() => showToast('Report exported successfully', 'success')}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-sky-500/20 border border-sky-500/30 text-sky-400 rounded-xl hover:bg-sky-500/30 transition-all"
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[#00B4D8]/20 border border-[#00B4D8]/30 text-[#00B4D8] rounded-xl hover:bg-[#00B4D8]/30 transition-all"
           >
             <DownloadPanel className="w-4 h-4" /> Export
           </button>
@@ -516,167 +533,114 @@ function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) 
       </div>
 
       {/* KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {(kpiData || []).map((kpi, i) => {
-          const Icon = kpi.icon;
-          return (
-            <div
-              key={i}
-              className="glass p-5 fade-in hover:glass-hover transition-all duration-300 cursor-pointer group"
-              style={{ animationDelay: `${i * 80}ms` }}
-            >
-              <div className="flex items-start justify-between mb-3">
-                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
-                  <Icon className="w-5 h-5" style={{ color: kpi.color }} />
-                </div>
-                <span
-                  className={`flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
-                    kpi.positive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
-                  }`}
-                >
-                  {kpi.positive ? <TrendingUpPanel className="w-3 h-3" /> : <TrendingDownPanel className="w-3 h-3" />}
-                  {kpi.delta}
-                </span>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        {kpiData.map((kpi, idx) => (
+          <div key={idx} className="glass p-5 fade-in" style={{ animationDelay: `${idx * 0.1}s` }}>
+            <div className="flex items-start justify-between mb-4">
+              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
+                <kpi.icon className="w-5 h-5" style={{ color: kpi.color }} />
               </div>
-              <p className="text-xs text-slate-500 mb-1">{kpi.label}</p>
-              <p className="text-2xl font-bold text-slate-100 count-up">
-                {animatedValues[i]?.toLocaleString() || kpi.value}
-              </p>
-              {/* Sparkline */}
-              <svg className="w-full h-8 mt-3 opacity-50 group-hover:opacity-80 transition-opacity" viewBox={`0 0 100 20`}>
-                <defs>
-                  <linearGradient id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor={kpi.color} stopOpacity="0.4" />
-                    <stop offset="100%" stopColor={kpi.color} stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                <path
-                  d={`M${(kpi.sparkline || []).map((v, idx) => `${(idx / ((kpi.sparkline || []).length - 1)) * 100},${20 - (v / Math.max(...(kpi.sparkline || [1]))) * 18}`).join(' L')}`}
-                  fill="none"
-                  stroke={kpi.color}
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d={`M${(kpi.sparkline || []).map((v, idx) => `${(idx / ((kpi.sparkline || []).length - 1)) * 100},${20 - (v / Math.max(...(kpi.sparkline || [1]))) * 18}`).join(' L')} L100,20 L0,20 Z`}
-                  fill={`url(#grad-${i})`}
-                />
-              </svg>
+              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
+                kpi.positive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'
+              }`}>
+                {kpi.delta}
+              </span>
             </div>
-          );
-        })}
+            <p className="text-2xl font-bold text-white mb-1">
+              {animatedValues[idx]?.toLocaleString() || '0'}
+            </p>
+            <p className="text-xs text-slate-400">{kpi.label}</p>
+            <div className="mt-3 h-8 flex items-end gap-0.5">
+              {kpi.sparkline.map((v, i) => (
+                <div
+                  key={i}
+                  className="flex-1 rounded-sm transition-all duration-300"
+                  style={{
+                    height: `${(v / Math.max(...kpi.sparkline)) * 100}%`,
+                    background: kpi.color,
+                    opacity: 0.3 + (v / Math.max(...kpi.sparkline)) * 0.5,
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+        ))}
       </div>
 
-      {/* Charts Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Area Chart */}
-        <div className="lg:col-span-2 glass p-6 fade-in">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-200">Traffic Overview</h3>
-              <p className="text-xs text-slate-500">Organic vs Paid traffic trends</p>
-            </div>
-            <div className="flex items-center gap-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-sky-400" />
-                <span className="text-xs text-slate-400">Organic</span>
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
+        <div className="xl:col-span-2 glass p-5 fade-in">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-sm font-semibold text-slate-300">Traffic Overview</h3>
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-[#00B4D8]" />
+                <span className="text-[10px] text-slate-500">Organic</span>
               </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded-full bg-indigo-400" />
-                <span className="text-xs text-slate-400">Paid</span>
+              <div className="flex items-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-[#1E3A5F]" />
+                <span className="text-[10px] text-slate-500">Paid</span>
               </div>
             </div>
           </div>
-          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto">
+          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto" style={{ maxHeight: '220px' }}>
             <defs>
-              <linearGradient id="gradOrganic" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#38BDF8" stopOpacity="0" />
+              <linearGradient id="organicGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#00B4D8" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#00B4D8" stopOpacity="0" />
               </linearGradient>
-              <linearGradient id="gradPaid" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#818CF8" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#818CF8" stopOpacity="0" />
+              <linearGradient id="paidGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0" />
               </linearGradient>
             </defs>
             {/* Grid lines */}
-            {yTickValues.map((val, i) => (
+            {yTickValues.map((v, i) => (
               <g key={i}>
-                <line
-                  x1={padding.left}
-                  y1={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
-                  x2={chartWidth - padding.right}
-                  y2={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
-                  stroke="rgba(255,255,255,0.05)"
-                  strokeDasharray="4 4"
-                />
-                <text
-                  x={padding.left - 8}
-                  y={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom) + 4}
-                  textAnchor="end"
-                  className="text-[10px] fill-slate-600"
-                >
-                  {`${(val / 1000).toFixed(0)}k`}
+                <line x1={padding.left} y1={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
+                  x2={chartWidth - padding.right} y2={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
+                  stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
+                <text x={padding.left - 8} y={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom) + 3}
+                  textAnchor="end" className="text-[9px]" fill="rgba(255,255,255,0.3)">
+                  {v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}
                 </text>
               </g>
             ))}
-            {/* XPanel labels */}
+            {/* XPanel axis labels */}
             {chartData.map((d, i) => (
-              <text
-                key={i}
-                x={padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right)}
-                y={chartHeight - 8}
-                textAnchor="middle"
-                className="text-[10px] fill-slate-600"
-              >
+              <text key={i} x={padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right)}
+                y={chartHeight - 8} textAnchor="middle" className="text-[9px]" fill="rgba(255,255,255,0.3)">
                 {d.day}
               </text>
             ))}
-            {/* Areas */}
-            <path d={areaOrganic} fill="url(#gradOrganic)" />
-            <path d={areaPaid} fill="url(#gradPaid)" />
+            {/* Area fills */}
+            <path d={areaOrganic} fill="url(#organicGrad)" className="transition-all duration-1000" />
+            <path d={areaPaid} fill="url(#paidGrad)" className="transition-all duration-1000" />
             {/* Lines */}
-            <path d={pathOrganic} fill="none" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            <path d={pathPaid} fill="none" stroke="#818CF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            {/* Dots */}
+            <path d={pathOrganic} fill="none" stroke="#00B4D8" strokeWidth="2" className="transition-all duration-1000" />
+            <path d={pathPaid} fill="none" stroke="#1E3A5F" strokeWidth="2" strokeDasharray="4,2" className="transition-all duration-1000" />
+            {/* Dots on organic */}
             {pointsOrganic.map((p, i) => (
-              <circle key={`o-${i}`} cx={p.x} cy={p.y} r="3" fill="#38BDF8" stroke="#0F172A" strokeWidth="2" />
-            ))}
-            {pointsPaid.map((p, i) => (
-              <circle key={`p-${i}`} cx={p.x} cy={p.y} r="3" fill="#818CF8" stroke="#0F172A" strokeWidth="2" />
+              <circle key={i} cx={p.x} cy={p.y} r="3" fill="#00B4D8" stroke="#06080f" strokeWidth="1.5" />
             ))}
           </svg>
         </div>
 
-        {/* Bar Chart */}
-        <div className="glass p-6 fade-in">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-200">Traffic Sources</h3>
-              <p className="text-xs text-slate-500">Channel distribution</p>
-            </div>
-          </div>
-          <div className="space-y-4">
+        <div className="glass p-5 fade-in">
+          <h3 className="text-sm font-semibold text-slate-300 mb-4">Traffic Sources</h3>
+          <div className="space-y-3">
             {barData.map((item, i) => (
-              <div key={i} className="space-y-1.5">
-                <div className="flex justify-between items-center">
+              <div key={i} className="fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
+                <div className="flex items-center justify-between mb-1">
                   <span className="text-xs text-slate-400">{item.name}</span>
                   <span className="text-xs font-medium text-slate-300">{item.value}%</span>
                 </div>
-                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
                   <div
                     className="h-full rounded-full transition-all duration-1000 ease-out"
                     style={{
                       width: `${(item.value / maxBar) * 100}%`,
-                      background: i === 0
-                        ? 'linear-gradient(90deg, #38BDF8, #818CF8)'
-                        : i === 1
-                        ? 'linear-gradient(90deg, #818CF8, #C084FC)'
-                        : i === 2
-                        ? 'linear-gradient(90deg, #22C55E, #4ADE80)'
-                        : i === 3
-                        ? 'linear-gradient(90deg, #F59E0B, #FBBF24)'
-                        : 'linear-gradient(90deg, #EF4444, #F87171)',
+                      background: `linear-gradient(90deg, ${['#00B4D8', '#1E3A5F', '#6366F1', '#22C55E', '#F59E0B'][i]}, ${['#38BDF8', '#2E4A7F', '#818CF8', '#4ADE80', '#FBBF24'][i]})`,
                     }}
                   />
                 </div>
@@ -686,75 +650,69 @@ function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) 
         </div>
       </div>
 
-      {/* Table + Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* ActivityPanel Table */}
-        <div className="lg:col-span-2 glass p-6 fade-in">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-sm font-semibold text-slate-200">Recent ActivityPanel</h3>
-              <p className="text-xs text-slate-500">Latest SEO tasks and updates</p>
-            </div>
-            <button className="flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 transition-colors">
-              View all <ChevronRightPanel className="w-3 h-3" />
+      {/* Recent ActivityPanel Table + Quick Actions */}
+      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
+        <div className="xl:col-span-3 glass overflow-hidden fade-in">
+          <div className="flex items-center justify-between p-4 border-b border-white/5">
+            <h3 className="text-sm font-semibold text-slate-300">Recent ActivityPanel</h3>
+            <button className="flex items-center gap-1 text-xs text-[#00B4D8] hover:text-[#00B4D8]/80 transition-colors">
+              View All <ArrowRightPanel className="w-3 h-3" />
             </button>
           </div>
           <div className="overflow-x-auto">
             <table className="w-full text-xs">
               <thead>
-                <tr className="border-b border-white/5">
-                  {[
-                    { key: 'date', label: 'Date' },
-                    { key: 'task', label: 'Task' },
-                    { key: 'domain', label: 'Domain' },
-                    { key: 'status', label: 'Status' },
-                    { key: 'keywords', label: 'Keywords' },
-                    { key: 'difficulty', label: 'Difficulty' },
-                  ].map((col) => (
-                    <th
-                      key={col.key}
-                      className="text-left py-2 px-3 text-[10px] font-medium text-slate-500 uppercase tracking-wider cursor-pointer hover:text-slate-300 transition-colors"
-                      onClick={() => handleSort(col.key)}
-                    >
-                      {col.label}
-                      <SortIcon field={col.key} />
-                    </th>
-                  ))}
+                <tr className="border-b border-white/5 bg-white/[0.02]">
+                  <th
+                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
+                    onClick={() => handleSort('date')}
+                  >
+                    Date <SortIcon field="date" />
+                  </th>
+                  <th
+                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
+                    onClick={() => handleSort('task')}
+                  >
+                    Task <SortIcon field="task" />
+                  </th>
+                  <th
+                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
+                    onClick={() => handleSort('domain')}
+                  >
+                    Domain <SortIcon field="domain" />
+                  </th>
+                  <th
+                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
+                    onClick={() => handleSort('status')}
+                  >
+                    Status <SortIcon field="status" />
+                  </th>
+                  <th
+                    className="text-right p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
+                    onClick={() => handleSort('keywords')}
+                  >
+                    Keywords <SortIcon field="keywords" />
+                  </th>
                 </tr>
               </thead>
               <tbody>
-                {sortedActivity.map((row, i) => (
-                  <tr key={row.id} className="border-b border-white/5 hover:bg-white/5 transition-colors group">
-                    <td className="py-3 px-3 text-slate-400 whitespace-nowrap">{row.date}</td>
-                    <td className="py-3 px-3 text-slate-200 font-medium">{row.task}</td>
-                    <td className="py-3 px-3 text-sky-400">{row.domain}</td>
-                    <td className="py-3 px-3">
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                          row.status === 'Completed'
-                            ? 'bg-emerald-500/15 text-emerald-400'
-                            : row.status === 'Processing'
-                            ? 'bg-sky-500/15 text-sky-400'
-                            : 'bg-yellow-500/15 text-yellow-400'
-                        }`}
-                      >
+                {sortedActivity.map((row, idx) => (
+                  <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                    <td className="p-3 text-slate-400 whitespace-nowrap">
+                      {row.date}
+                    </td>
+                    <td className="p-3 text-slate-300 font-medium">{row.task}</td>
+                    <td className="p-3 text-slate-400">{row.domain}</td>
+                    <td className="p-3">
+                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
+                        row.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400' :
+                        row.status === 'Processing' ? 'bg-sky-500/10 text-sky-400' :
+                        'bg-amber-500/10 text-amber-400'
+                      }`}>
                         {row.status}
                       </span>
                     </td>
-                    <td className="py-3 px-3 text-slate-300">{row.keywords}</td>
-                    <td className="py-3 px-3">
-                      <span
-                        className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                          row.difficulty === 'Low'
-                            ? 'bg-emerald-500/15 text-emerald-400'
-                            : row.difficulty === 'Medium'
-                            ? 'bg-yellow-500/15 text-yellow-400'
-                            : 'bg-red-500/15 text-red-400'
-                        }`}
-                      >
-                        {row.difficulty}
-                      </span>
-                    </td>
+                    <td className="p-3 text-right text-slate-300">{row.keywords}</td>
                   </tr>
                 ))}
               </tbody>
@@ -762,21 +720,14 @@ function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) 
           </div>
         </div>
 
-        {/* Quick Actions */}
-        <div className="space-y-4">
-          <div className="glass p-5 fade-in">
-            <h3 className="text-sm font-semibold text-slate-200 mb-4">Quick Actions</h3>
-            <div className="space-y-2">
-              {quickActions.map((action) => {
-                const Icon = action.icon;
-                return (
-                  <button
-                    key={action.id}
-                    className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-white/5 transition-all text-left group"
-                    onClick={() => showToast(`${action.label} started`, 'success')}
-                  >
-                    <div
-                      className={`w-9 h-9 rounded-lg ${action.color} flex items-center justify-center flex-shrink-0 group
+        <div className="space-y-3">
+          <h3 className="text-sm font-semibold text-slate-300 px-1">Quick Actions</h3>
+          {quickActions.map((action, idx) => {
+            const Icon = action.icon;
+            return (
+              <button
+                key={action.id}
+                onClick={() => showToast(`${action.label} initiated`,
 
 // Hide loading overlay and render
 var _loading = document.getElementById('_cdn-loading');
