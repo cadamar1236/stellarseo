@@ -1,31 +1,13 @@
+```jsx
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import {
-  LayoutDashboard,
-  TrendingUp,
-  FileText,
-  Settings,
-  Bell,
-  ChevronDown,
-  Search,
-  ArrowUpRight,
-  ArrowDownRight,
-  Users,
-  Eye,
-  MousePointerClick,
-  DollarSign,
-  Loader2,
-  CheckCircle2,
-  XCircle,
-  Clock,
-  AlertCircle,
-  Zap,
-  Bot,
-  Target,
-  Link2,
-  Sparkles,
-  Menu,
-  X,
-  LogOut,
+  SearchPanel, BellPanel, SettingsPanel, ChevronDownPanel, TrendingUpPanel, TrendingDownPanel,
+  FileTextPanel, LinkPanel, TargetPanel, ZapPanel, BarChart3Panel, UsersPanel, ExternalLinkPanel,
+  HomePanel, PieChartPanel, FileSpreadsheet, MenuPanel, XPanel, PlusPanel, RefreshCwPanel,
+  ArrowUpDown, ArrowUpPanel, ArrowDownPanel, FilterPanel, DownloadPanel, EyePanel,
+  CheckCircle2, AlertTrianglePanel, ClockPanel, ChevronRightPanel, GripVertical,
+  GlobePanel, Sparkles, ActivityPanel, ArrowRightPanel, CopyPanel, MoreHorizontalPanel,
+  MailPanel, MessageSquarePanel, Share2, StarPanel, CalendarPanel
 } from 'lucide-react';
 
 const BASE = window.__BACKEND_URL__ || '';
@@ -41,629 +23,594 @@ async function apiFetch(path, opts = {}) {
   return null;
 }
 
-const MOCK_KPI_DATA = [
-  { label: 'Total Keywords', value: 1247, icon: Target, delta: 12.5, positive: true },
-  { label: 'Page Views', value: 89432, icon: Eye, delta: 8.3, positive: true },
-  { label: 'Click Rate', value: 4.7, icon: MousePointerClick, delta: -2.1, positive: false, suffix: '%' },
-  { label: 'Revenue Impact', value: 28400, icon: DollarSign, delta: 15.2, positive: true, prefix: '$' },
-];
+export default function App() {
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [notifications, setNotifications] = useState(3);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [toast, setToast] = useState(null);
+  const [backendData, setBackendData] = useState(null);
 
-const MOCK_TREND_DATA = [
-  { date: 'Mon', value: 240 },
-  { date: 'Tue', value: 380 },
-  { date: 'Wed', value: 320 },
-  { date: 'Thu', value: 510 },
-  { date: 'Fri', value: 470 },
-  { date: 'Sat', value: 620 },
-  { date: 'Sun', value: 580 },
-];
-
-const MOCK_ACTIVITY_DATA = [
-  { id: 1, action: 'Keyword Research', page: '/products/sneakers', status: 'completed', user: 'Sarah J.', time: '2 min ago', priority: 'high' },
-  { id: 2, action: 'Content Generation', page: '/blog/top-10-shoes', status: 'running', user: 'Mike R.', time: '15 min ago', priority: 'medium' },
-  { id: 3, action: 'Link Building', page: '/outreach', status: 'pending', user: 'Emily K.', time: '1 hr ago', priority: 'low' },
-  { id: 4, action: 'SEO Audit', page: '/analytics/overview', status: 'failed', user: 'Alex P.', time: '3 hrs ago', priority: 'high' },
-  { id: 5, action: 'Ranking Update', page: '/products/running', status: 'completed', user: 'Chris L.', time: '5 hrs ago', priority: 'medium' },
-];
-
-const MOCK_SEARCH_RESULTS = [
-  { keyword: 'running shoes', volume: 14500, difficulty: 62, opportunity: 'high' },
-  { keyword: 'best sneakers', volume: 22000, difficulty: 78, opportunity: 'medium' },
-  { keyword: 'vegan leather shoes', volume: 3200, difficulty: 28, opportunity: 'high' },
-];
-
-function Counter({ target, suffix = '', prefix = '', duration = 2000 }) {
-  const [count, setCount] = useState(0);
-  const hasAnimated = useRef(false);
-
-  useEffect(() => {
-    if (hasAnimated.current) return;
-    hasAnimated.current = true;
-    const decimals = (target.toString().split('.')[1] || '').length;
-    const step = target / (duration / 16);
-    let current = 0;
-    const timer = setInterval(() => {
-      current += step;
-      if (current >= target) {
-        current = target;
-        clearInterval(timer);
-      }
-      setCount(current);
-    }, 16);
-    return () => clearInterval(timer);
-  }, [target, duration]);
-
-  return <>{prefix}{count.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 1 })}{suffix}</>;
-}
-
-function KPICard({ data, index }) {
-  const [loaded, setLoaded] = useState(false);
-  const Icon = data.icon;
-
-  useEffect(() => {
-    const t = setTimeout(() => setLoaded(true), index * 100);
-    return () => clearTimeout(t);
-  }, [index]);
-
-  return (
-    <div className={`glass p-5 fade-in transition-all duration-300 hover:bg-white/[0.06] hover:border-white/20 cursor-pointer`} style={{ animationDelay: `${index * 0.1}s` }}>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">{data.label}</span>
-        <div className="p-2 rounded-lg bg-white/[0.05]">
-          <Icon className="w-4 h-4 text-yellow-400" />
-        </div>
-      </div>
-      <div className="flex items-end justify-between">
-        <div className="text-3xl font-bold text-white">
-          {loaded ? <Counter target={data.value} suffix={data.suffix || ''} prefix={data.prefix || ''} /> : '0'}
-        </div>
-        <div className={`flex items-center gap-1 text-xs font-medium px-2 py-1 rounded-full ${data.positive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'}`}>
-          {data.positive ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
-          {data.delta}%
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function LineChart({ data, height = 200, color = '#F59E0B' }) {
-  const [animated, setAnimated] = useState(false);
-  const svgRef = useRef(null);
-
-  useEffect(() => {
-    requestAnimationFrame(() => setAnimated(true));
+  const showToast = useCallback((message, type = 'success') => {
+    setToast({ message, type, id: Date.now() });
+    setTimeout(() => setToast(null), 3500);
   }, []);
 
-  const maxVal = Math.max(...(data || []).map(d => d.value));
-  const points = (data || []).map((d, i) => ({
-    x: (i / ((data || []).length - 1)) * 100,
-    y: ((maxVal - d.value) / maxVal) * height,
-  }));
-
-  const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'} ${p.x} ${p.y}`).join(' ');
-
-  const areaPath = `${linePath} L 100 ${height} L 0 ${height} Z`;
-
-  return (
-    <svg ref={svgRef} viewBox={`0 0 100 ${height}`} className="w-full h-full" preserveAspectRatio="none">
-      <defs>
-        <linearGradient id="lineGradient" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={color} stopOpacity="0.3" />
-          <stop offset="100%" stopColor={color} stopOpacity="0" />
-        </linearGradient>
-      </defs>
-      <path d={areaPath} fill="url(#lineGradient)" opacity={animated ? 0.8 : 0} style={{ transition: 'opacity 0.8s ease' }} />
-      <path
-        d={linePath}
-        fill="none"
-        stroke={color}
-        strokeWidth="2"
-        strokeDasharray={animated ? '1000' : '0'}
-        strokeDashoffset="0"
-        style={{ transition: 'stroke-dasharray 1.5s ease-in-out' }}
-      />
-      {animated && points.slice(0).map((p, i) => (
-        <circle
-          key={i}
-          cx={p.x}
-          cy={p.y}
-          r="2"
-          fill="#06080f"
-          stroke={color}
-          strokeWidth="2"
-          style={{ animation: `fadeIn 0.3s ease ${i * 0.1}s forwards`, opacity: 0 }}
-        />
-      ))}
-    </svg>
-  );
-}
-
-function BarChart({ data, height = 150, color = '#1E3A8A' }) {
-  const [animated, setAnimated] = useState(false);
-
   useEffect(() => {
-    requestAnimationFrame(() => setAnimated(true));
+    const style = document.createElement('style');
+    style.textContent = ':root { --accent: #00C9A7; --accent2: #1E3A5F; }';
+      document.head.appendChild(style);
+    return () => document.head.removeChild(style);
   }, []);
 
-  const maxVal = Math.max(...(data || []).map(d => d.value));
+  useEffect(() => {
+    (async () => {
+      const data = await apiFetch('/api/dashboard');
+      if (data) setBackendData(data);
+    })();
+  }, []);
 
-  return (
-    <div className="flex items-end gap-2 h-full" style={{ height }}>
-      {(data || []).map((d, i) => {
-        const pct = (d.value / maxVal) * 100;
-        return (
-          <div key={i} className="flex-1 flex flex-col items-center gap-1">
-            <div
-              className="w-full rounded-t-md transition-all duration-700 ease-out"
-              style={{
-                height: animated ? `${pct}%` : '0%',
-                background: `linear-gradient(180deg, ${color}, ${color}88)`,
-                transitionDelay: `${i * 0.1}s`,
-              }}
-            />
-            <span className="text-[10px] text-slate-500">{d.date}</span>
-          </div>
-        );
-      })}
-    </div>
-  );
-}
-
-function DataTable({ data, columns }) {
-  const [sortKey, setSortKey] = useState(null);
-  const [sortDir, setSortDir] = useState('asc');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-
-  const filteredData = useMemo(() => {
-    let items = (data || []).filter(item => {
-      if (filterStatus !== 'all' && item.status !== filterStatus) return false;
-      if (searchTerm) {
-        return Object.values(item).some(v =>
-          String(v).toLowerCase().includes(searchTerm.toLowerCase())
-        );
-      }
-      return true;
-    });
-
-    if (sortKey) {
-      items = [...items].sort((a, b) => {
-        const aVal = a[sortKey];
-        const bVal = b[sortKey];
-        if (aVal < bVal) return sortDir === 'asc' ? -1 : 1;
-        if (aVal > bVal) return sortDir === 'asc' ? 1 : -1;
-        return 0;
-      });
-    }
-    return items;
-  }, [data, searchTerm, filterStatus, sortKey, sortDir]);
-
-  const handleSort = (key) => {
-    if (sortKey === key) {
-      setSortDir(d => d === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortKey(key);
-      setSortDir('asc');
-    }
-  };
-
-  const statusColors = {
-    completed: 'bg-emerald-500/10 text-emerald-400',
-    running: 'bg-blue-500/10 text-blue-400',
-    pending: 'bg-yellow-500/10 text-yellow-400',
-    failed: 'bg-red-500/10 text-red-400',
-  };
-
-  const statusIcons = {
-    completed: CheckCircle2,
-    running: Loader2,
-    pending: Clock,
-    failed: XCircle,
-  };
-
-  return (
-    <div>
-      <div className="flex items-center gap-4 mb-4">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-          <input
-            type="text"
-            placeholder="Search activity..."
-            value={searchTerm}
-            onChange={e => setSearchTerm(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white/[0.04] border border-white/10 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-yellow-500/50 focus:ring-1 focus:ring-yellow-500/20"
-          />
-        </div>
-        <select
-          value={filterStatus}
-          onChange={e => setFilterStatus(e.target.value)}
-          className="px-3 py-2 bg-white/[0.04] border border-white/10 rounded-lg text-sm text-slate-200 focus:outline-none focus:border-yellow-500/50"
-        >
-          <option value="all">All Status</option>
-          <option value="completed">Completed</option>
-          <option value="running">Running</option>
-          <option value="pending">Pending</option>
-          <option value="failed">Failed</option>
-        </select>
-      </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-sm">
-          <thead>
-            <tr className="border-b border-white/5">
-              {(columns || []).map(col => (
-                <th
-                  key={col.key}
-                  onClick={() => handleSort(col.key)}
-                  className={`text-left py-3 px-3 text-xs font-medium text-slate-400 uppercase tracking-wider cursor-pointer hover:text-slate-200 transition-colors ${col.sortable ? '' : ''}`}
-                >
-                  <div className="flex items-center gap-1">
-                    {col.label}
-                    {col.sortable && sortKey === col.key && (
-                      <span className="text-yellow-400">{sortDir === 'asc' ? '↑' : '↓'}</span>
-                    )}
-                  </div>
-                </th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {(filteredData || []).map((row, i) => {
-              const Icon = statusIcons[row.status] || AlertCircle;
-              return (
-                <tr key={row.id} className="border-b border-white/[0.02] hover:bg-white/[0.02] transition-colors">
-                  <td className="py-3 px-3 text-slate-300">{row.action}</td>
-                  <td className="py-3 px-3 text-slate-400">{row.page}</td>
-                  <td className="py-3 px-3">
-                    <span className={`inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-xs font-medium ${statusColors[row.status] || 'bg-slate-500/10 text-slate-400'}`}>
-                      <Icon className={`w-3 h-3 ${row.status === 'running' ? 'animate-spin' : ''}`} />
-                      {row.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-3 text-slate-400">{row.user}</td>
-                  <td className="py-3 px-3 text-slate-500">{row.time}</td>
-                </tr>
-              );
-            })}
-          </tbody>
-        </table>
-      </div>
-    </div>
-  );
-}
-
-function Sidebar({ activePage, setActivePage }) {
   const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    { id: 'analytics', label: 'Analytics', icon: TrendingUp },
-    { id: 'reports', label: 'Reports', icon: FileText },
-    { id: 'settings', label: 'Settings', icon: Settings },
+    { id: 'dashboard', label: 'Dashboard', icon: HomePanel },
+    { id: 'analytics', label: 'Analytics', icon: PieChartPanel },
+    { id: 'keyword-research', label: 'Keyword Research', icon: SearchPanel },
+    { id: 'content', label: 'Content', icon: FileTextPanel },
+    { id: 'backlinks', label: 'Backlinks', icon: LinkPanel },
+    { id: 'rank-tracker', label: 'Rank Tracker', icon: BarChart3Panel },
+    { id: 'reports', label: 'Reports', icon: FileSpreadsheet },
+    { id: 'settings', label: 'SettingsPanel', icon: SettingsPanel },
+  ];
+
+  const kpiData = (backendData && backendData.kpiData) || [
+    {
+      icon: TrendingUpPanel,
+      label: 'Organic Traffic',
+      value: '128,450',
+      delta: '+12.5%',
+      positive: true,
+      color: '#38BDF8',
+      sparkline: [35, 42, 38, 55, 48, 62, 58, 70, 65, 78],
+    },
+    {
+      icon: TargetPanel,
+      label: 'Keywords Ranked',
+      value: '3,842',
+      delta: '+8.3%',
+      positive: true,
+      color: '#818CF8',
+      sparkline: [20, 25, 28, 32, 30, 35, 40, 38, 45, 42],
+    },
+    {
+      icon: FileTextPanel,
+      label: 'Content Generated',
+      value: '1,247',
+      delta: '+24.1%',
+      positive: true,
+      color: '#22C55E',
+      sparkline: [10, 15, 18, 25, 30, 28, 35, 40, 38, 45],
+    },
+    {
+      icon: LinkPanel,
+      label: 'Backlinks Acquired',
+      value: '5,610',
+      delta: '-3.2%',
+      positive: false,
+      color: '#EF4444',
+      sparkline: [42, 45, 40, 38, 35, 32, 30, 28, 25, 22],
+    },
+  ];
+
+  const recentActivity = (backendData && backendData.recentActivity) || [
+    { id: 1, date: '2025-02-18 14:32', task: 'Keyword research completed', domain: 'stellar-shop.com', status: 'Completed', keywords: 245, difficulty: 'Medium' },
+    { id: 2, date: '2025-02-18 13:15', task: 'Content brief generated', domain: 'techgear.io', status: 'Processing', keywords: 128, difficulty: 'Low' },
+    { id: 3, date: '2025-02-18 11:48', task: 'Backlink outreach sent', domain: 'fashionhub.co', status: 'Pending', keywords: 56, difficulty: 'High' },
+    { id: 4, date: '2025-02-18 09:22', task: 'Rank tracking update', domain: 'stellar-shop.com', status: 'Completed', keywords: 389, difficulty: 'Medium' },
+    { id: 5, date: '2025-02-17 23:55', task: 'AI content generated', domain: 'organicbeauty.com', status: 'Completed', keywords: 412, difficulty: 'Low' },
+  ];
+
+  const quickActions = [
+    { id: 1, label: 'New Keyword Research', icon: SearchPanel, color: 'bg-sky-500', desc: 'Analyze keywords for any domain' },
+    { id: 2, label: 'Generate Content', icon: FileTextPanel, color: 'bg-indigo-500', desc: 'Create AI-optimized content briefs' },
+    { id: 3, label: 'Find Backlinks', icon: LinkPanel, color: 'bg-emerald-500', desc: 'Discover link building opportunities' },
+    { id: 4, label: 'Run Rank Report', icon: BarChart3Panel, color: 'bg-purple-500', desc: 'Get latest ranking positions' },
   ];
 
   return (
-    <aside className="w-64 flex-shrink-0 flex flex-col border-r border-white/5 bg-white/[0.02] h-full">
-      <div className="h-14 flex items-center gap-2 px-5 border-b border-white/5">
-        <Sparkles className="w-6 h-6 text-yellow-400" />
-        <span className="font-semibold text-lg">
-          <span className="gradient-text">Stellar</span>
-          <span className="text-slate-200">SEO</span>
-        </span>
+    <div className="flex h-screen overflow-hidden bg-[#0F172A] text-slate-100">
+      <Sidebar
+        navItems={navItems}
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        sidebarOpen={sidebarOpen}
+        setSidebarOpen={setSidebarOpen}
+      />
+
+      <div className="flex-1 flex flex-col overflow-hidden">
+        <TopBar
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          notifications={notifications}
+          setNotifications={setNotifications}
+          sidebarOpen={sidebarOpen}
+          setSidebarOpen={setSidebarOpen}
+        />
+
+        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-thin bg-[#0F172A]">
+          {currentPage === 'dashboard' && (
+            <DashboardContent
+              kpiData={kpiData}
+              recentActivity={recentActivity}
+              quickActions={quickActions}
+              showToast={showToast}
+            />
+          )}
+          {currentPage !== 'dashboard' && (
+            <PagePlaceholder page={currentPage} navItems={navItems} />
+          )}
+        </main>
       </div>
-      <nav className="flex-1 px-3 py-4 space-y-1">
-        {navItems.map(item => {
+
+      {toast && (
+        <Toast message={toast.message} type={toast.type} id={toast.id} />
+      )}
+    </div>
+  );
+}
+
+function Sidebar({ navItems, currentPage, setCurrentPage, sidebarOpen, setSidebarOpen }) {
+  return (
+    <aside
+      className={`${
+        sidebarOpen ? 'w-64' : 'w-20'
+      } flex-shrink-0 flex flex-col border-r border-white/5 bg-white/[0.02] h-full transition-all duration-300 ease-in-out relative`}
+    >
+      <div className="h-14 flex items-center px-4 border-b border-white/5">
+        <div className="flex items-center gap-3 overflow-hidden">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center flex-shrink-0">
+            <ZapPanel className="w-4 h-4 text-white" />
+          </div>
+          {sidebarOpen && (
+            <span className="font-semibold text-base whitespace-nowrap gradient-text">
+              StellarSEO
+            </span>
+          )}
+        </div>
+      </div>
+
+      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto scrollbar-thin">
+        {navItems.map((item) => {
           const Icon = item.icon;
-          const isActive = activePage === item.id;
+          const isActive = currentPage === item.id;
           return (
             <button
               key={item.id}
-              onClick={() => setActivePage(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 ${
+              onClick={() => setCurrentPage(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
                 isActive
-                  ? 'bg-blue-900/30 text-yellow-400 border border-blue-800/30'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/[0.04]'
+                  ? 'bg-sky-500/15 text-sky-400 border border-sky-500/20'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               }`}
             >
-              <Icon className="w-4 h-4" />
-              {item.label}
+              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-sky-400' : ''}`} />
+              {sidebarOpen && (
+                <span className="whitespace-nowrap truncate">{item.label}</span>
+              )}
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-sky-400 rounded-r-full" />
+              )}
             </button>
           );
         })}
       </nav>
-      <div className="px-3 py-4 border-t border-white/5">
-        <button className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-white/[0.04] transition-all duration-200">
-          <LogOut className="w-4 h-4" />
-          Sign Out
-        </button>
+
+      <div className="p-3 border-t border-white/5">
+        <div className={`glass p-3 ${!sidebarOpen && 'flex justify-center'}`}>
+          {sidebarOpen ? (
+            <div className="flex items-center gap-3">
+              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center flex-shrink-0">
+                <span className="text-xs font-bold text-white">JD</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-medium text-slate-200 truncate">John Doe</p>
+                <p className="text-[10px] text-slate-500 truncate">Enterprise Plan</p>
+              </div>
+              <ChevronDownPanel className="w-3 h-3 text-slate-500 flex-shrink-0" />
+            </div>
+          ) : (
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-sky-400 to-indigo-500 flex items-center justify-center">
+              <span className="text-xs font-bold text-white">JD</span>
+            </div>
+          )}
+        </div>
       </div>
     </aside>
   );
 }
 
-function TopBar({ onToggleSidebar }) {
+function TopBar({ searchQuery, setSearchQuery, notifications, setNotifications, sidebarOpen, setSidebarOpen }) {
+  const [showNotifications, setShowNotifications] = useState(false);
+  const notifRef = useRef(null);
+
+  useEffect(() => {
+    const handleClick = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setShowNotifications(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, []);
+
+  const dummyNotifs = [
+    { id: 1, text: 'Rank tracking report is ready', time: '5m ago', unread: true },
+    { id: 2, text: '3 new backlink opportunities found', time: '1h ago', unread: true },
+    { id: 3, text: 'Content generation completed', time: '3h ago', unread: true },
+  ];
+
   return (
-    <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 flex-shrink-0">
+    <header className="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-white/5 flex-shrink-0 bg-[#0F172A]">
       <div className="flex items-center gap-4">
-        <button onClick={onToggleSidebar} className="lg:hidden p-2 hover:bg-white/[0.04] rounded-lg">
-          <Menu className="w-5 h-5 text-slate-400" />
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="p-2 rounded-lg hover:bg-white/5 transition-colors"
+        >
+          {sidebarOpen ? <XPanel className="w-4 h-4" /> : <MenuPanel className="w-4 h-4" />}
         </button>
-        <h1 className="text-lg font-semibold text-slate-100">Dashboard</h1>
-      </div>
-      <div className="flex items-center gap-4">
-        <button className="relative p-2 hover:bg-white/[0.04] rounded-lg transition-colors">
-          <Bell className="w-5 h-5 text-slate-400" />
-          <span className="absolute top-1 right-1 w-2 h-2 bg-yellow-400 rounded-full"></span>
-        </button>
-        <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-600 to-yellow-500 flex items-center justify-center text-xs font-semibold text-white">
-            JD
-          </div>
-          <ChevronDown className="w-4 h-4 text-slate-500" />
+        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 focus-within:border-sky-500/50 transition-all">
+          <SearchPanel className="w-4 h-4 text-slate-500" />
+          <input
+            type="text"
+            placeholder="SearchPanel domain or keyword..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="bg-transparent text-sm outline-none w-48 lg:w-64 placeholder:text-slate-600"
+          />
         </div>
+      </div>
+
+      <div className="flex items-center gap-2">
+        <div ref={notifRef} className="relative">
+          <button
+            onClick={() => setShowNotifications(!showNotifications)}
+            className="p-2 rounded-lg hover:bg-white/5 transition-colors relative"
+          >
+            <BellPanel className="w-4 h-4" />
+            {notifications > 0 && (
+              <span className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-sky-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                {notifications}
+              </span>
+            )}
+          </button>
+          {showNotifications && (
+            <div className="absolute right-0 top-full mt-2 w-72 glass p-2 z-50 slide-in shadow-2xl">
+              <div className="flex items-center justify-between px-3 py-2">
+                <p className="text-xs font-semibold text-slate-300">Notifications</p>
+                <button
+                  onClick={() => setNotifications(0)}
+                  className="text-[10px] text-sky-400 hover:text-sky-300"
+                >
+                  Mark all read
+                </button>
+              </div>
+              {(dummyNotifs || []).slice(0, notifications).map((n) => (
+                <div key={n.id} className="flex items-start gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors">
+                  <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.unread ? 'bg-sky-500' : 'bg-slate-600'}`} />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs text-slate-300 truncate">{n.text}</p>
+                    <p className="text-[10px] text-slate-600 mt-0.5">{n.time}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+        <button className="p-2 rounded-lg hover:bg-white/5 transition-colors">
+          <SettingsPanel className="w-4 h-4" />
+        </button>
       </div>
     </header>
   );
 }
 
-function QuickActions() {
-  const actions = [
-    { label: 'Run Keyword Scan', icon: Target, color: 'text-blue-400' },
-    { label: 'Generate Content', icon: Bot, color: 'text-emerald-400' },
-    { label: 'Start Outreach', icon: Link2, color: 'text-purple-400' },
-    { label: 'View Rankings', icon: TrendingUp, color: 'text-yellow-400' },
-  ];
+function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) {
+  const [sortField, setSortField] = useState('date');
+  const [sortDir, setSortDir] = useState('desc');
+  const [animatedValues, setAnimatedValues] = useState((kpiData || []).map(() => 0));
+  const animRef = useRef(false);
+
+  const chartData = useMemo(() => [
+    { day: 'Mon', organic: 45000, paid: 22000, backlinks: 1800 },
+    { day: 'Tue', organic: 52000, paid: 24000, backlinks: 1950 },
+    { day: 'Wed', organic: 48000, paid: 21000, backlinks: 2100 },
+    { day: 'Thu', organic: 61000, paid: 28000, backlinks: 2250 },
+    { day: 'Fri', organic: 58000, paid: 26000, backlinks: 2400 },
+    { day: 'Sat', organic: 72000, paid: 31000, backlinks: 2600 },
+    { day: 'Sun', organic: 78000, paid: 33000, backlinks: 2850 },
+  ], []);
+
+  const barData = useMemo(() => [
+    { name: 'SEO', value: 65 },
+    { name: 'Direct', value: 45 },
+    { name: 'Social', value: 30 },
+    { name: 'Referral', value: 38 },
+    { name: 'Paid', value: 22 },
+  ], []);
+
+  useEffect(() => {
+    if (animRef.current) return;
+    animRef.current = true;
+    const targets = (kpiData || []).map((k) => parseInt(k.value.replace(/,/g, '')));
+    const duration = 1500;
+    const steps = 60;
+    let step = 0;
+    const interval = setInterval(() => {
+      step++;
+      setAnimatedValues(targets.map((t) => Math.round((t * step) / steps)));
+      if (step >= steps) clearInterval(interval);
+    }, duration / steps);
+    return () => clearInterval(interval);
+  }, [kpiData]);
+
+  const handleSort = (field) => {
+    if (sortField === field) {
+      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
+    } else {
+      setSortField(field);
+      setSortDir('asc');
+    }
+  };
+
+  const sortedActivity = useMemo(() => {
+    const sorted = [...(recentActivity || [])];
+    sorted.sort((a, b) => {
+      let va = a[sortField];
+      let vb = b[sortField];
+      if (typeof va === 'string') va = va.toLowerCase();
+      if (typeof vb === 'string') vb = vb.toLowerCase();
+      if (va < vb) return sortDir === 'asc' ? -1 : 1;
+      if (va > vb) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+    return sorted;
+  }, [recentActivity, sortField, sortDir]);
+
+  const SortIcon = ({ field }) => {
+    if (sortField !== field) return <ArrowUpDown className="w-3 h-3 inline ml-1 opacity-30" />;
+    return sortDir === 'asc' ? <ArrowUpPanel className="w-3 h-3 inline ml-1 text-sky-400" /> : <ArrowDownPanel className="w-3 h-3 inline ml-1 text-sky-400" />;
+  };
+
+  const maxVal = Math.max(...chartData.map((d) => Math.max(d.organic, d.paid)));
+  const maxBar = Math.max(...barData.map((d) => d.value));
+  const chartWidth = 600;
+  const chartHeight = 220;
+  const padding = { top: 20, right: 30, bottom: 35, left: 50 };
+
+  const pointsOrganic = chartData.map((d, i) => ({
+    x: padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right),
+    y: padding.top + (1 - d.organic / (maxVal * 1.1)) * (chartHeight - padding.top - padding.bottom),
+  }));
+  const pointsPaid = chartData.map((d, i) => ({
+    x: padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right),
+    y: padding.top + (1 - d.paid / (maxVal * 1.1)) * (chartHeight - padding.top - padding.bottom),
+  }));
+
+  const pathOrganic = `M${pointsOrganic.map((p) => `${p.x},${p.y}`).join(' L')}`;
+  const pathPaid = `M${pointsPaid.map((p) => `${p.x},${p.y}`).join(' L')}`;
+  const areaOrganic = `${pathOrganic} L${pointsOrganic[pointsOrganic.length - 1].x},${chartHeight - padding.bottom} L${pointsOrganic[0].x},${chartHeight - padding.bottom} Z`;
+  const areaPaid = `${pathPaid} L${pointsPaid[pointsPaid.length - 1].x},${chartHeight - padding.bottom} L${pointsPaid[0].x},${chartHeight - padding.bottom} Z`;
+
+  const yTicks = 5;
+  const yTickValues = Array.from({ length: yTicks }, (_, i) => Math.round((maxVal * 1.1 * i) / (yTicks - 1)));
 
   return (
-    <div className="space-y-3">
-      <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Quick Actions</h3>
-      <div className="space-y-2">
-        {actions.map((action, i) => {
-          const Icon = action.icon;
+    <div className="space-y-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold gradient-text">Dashboard</h1>
+          <p className="text-sm text-slate-400 mt-1">Your SEO performance at a glance</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all">
+            <CalendarPanel className="w-4 h-4" /> Last 7 days
+          </button>
+          <button
+            onClick={() => showToast('Report exported successfully', 'success')}
+            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-sky-500/20 border border-sky-500/30 text-sky-400 rounded-xl hover:bg-sky-500/30 transition-all"
+          >
+            <DownloadPanel className="w-4 h-4" /> Export
+          </button>
+        </div>
+      </div>
+
+      {/* KPI Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        {(kpiData || []).map((kpi, i) => {
+          const Icon = kpi.icon;
           return (
-            <button
+            <div
               key={i}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg glass hover:bg-white/[0.06] hover:border-white/20 transition-all duration-200 text-sm"
+              className="glass p-5 fade-in hover:glass-hover transition-all duration-300 cursor-pointer group"
+              style={{ animationDelay: `${i * 80}ms` }}
             >
-              <Icon className={`w-4 h-4 ${action.color}`} />
-              <span className="text-slate-300">{action.label}</span>
-            </button>
+              <div className="flex items-start justify-between mb-3">
+                <div className="p-2 rounded-lg bg-white/5 group-hover:bg-white/10 transition-colors">
+                  <Icon className="w-5 h-5" style={{ color: kpi.color }} />
+                </div>
+                <span
+                  className={`flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full ${
+                    kpi.positive ? 'bg-emerald-500/15 text-emerald-400' : 'bg-red-500/15 text-red-400'
+                  }`}
+                >
+                  {kpi.positive ? <TrendingUpPanel className="w-3 h-3" /> : <TrendingDownPanel className="w-3 h-3" />}
+                  {kpi.delta}
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mb-1">{kpi.label}</p>
+              <p className="text-2xl font-bold text-slate-100 count-up">
+                {animatedValues[i]?.toLocaleString() || kpi.value}
+              </p>
+              {/* Sparkline */}
+              <svg className="w-full h-8 mt-3 opacity-50 group-hover:opacity-80 transition-opacity" viewBox={`0 0 100 20`}>
+                <defs>
+                  <linearGradient id={`grad-${i}`} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stopColor={kpi.color} stopOpacity="0.4" />
+                    <stop offset="100%" stopColor={kpi.color} stopOpacity="0" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d={`M${(kpi.sparkline || []).map((v, idx) => `${(idx / ((kpi.sparkline || []).length - 1)) * 100},${20 - (v / Math.max(...(kpi.sparkline || [1]))) * 18}`).join(' L')}`}
+                  fill="none"
+                  stroke={kpi.color}
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d={`M${(kpi.sparkline || []).map((v, idx) => `${(idx / ((kpi.sparkline || []).length - 1)) * 100},${20 - (v / Math.max(...(kpi.sparkline || [1]))) * 18}`).join(' L')} L100,20 L0,20 Z`}
+                  fill={`url(#grad-${i})`}
+                />
+              </svg>
+            </div>
           );
         })}
       </div>
-    </div>
-  );
-}
 
-function KeywordSearch() {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const handleSearch = useCallback(async () => {
-    if (!query.trim()) return;
-    setLoading(true);
-    // Simulate API call
-    await new Promise(r => setTimeout(r, 800));
-    setResults(MOCK_SEARCH_RESULTS.filter(r => r.keyword.includes(query.toLowerCase())));
-    setLoading(false);
-  }, [query]);
-
-  return (
-    <div className="space-y-4">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={query}
-          onChange={e => setQuery(e.target.value)}
-          onKeyDown={e => e.key === 'Enter' && handleSearch()}
-          placeholder="Search keywords..."
-          className="flex-1 px-4 py-2 bg-white/[0.04] border border-white/10 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-yellow-500/50"
-        />
-        <button
-          onClick={handleSearch}
-          disabled={loading}
-          className="px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-500 hover:to-blue-600 text-white text-sm font-medium rounded-lg transition-all duration-200 disabled:opacity-50"
-        >
-          {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Search'}
-        </button>
-      </div>
-      <div className="space-y-2">
-        {(results || []).map((r, i) => (
-          <div key={i} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/[0.04] transition-colors">
-            <div className="flex items-center gap-2">
-              <Target className="w-3 h-3 text-yellow-400" />
-              <span className="text-sm text-slate-300">{r.keyword}</span>
+      {/* Charts Row */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Area Chart */}
+        <div className="lg:col-span-2 glass p-6 fade-in">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-200">Traffic Overview</h3>
+              <p className="text-xs text-slate-500">Organic vs Paid traffic trends</p>
             </div>
-            <div className="flex items-center gap-4 text-xs text-slate-500">
-              <span>{r.volume.toLocaleString()} vol</span>
-              <span className={`px-2 py-0.5 rounded-full ${
-                r.opportunity === 'high' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-yellow-500/10 text-yellow-400'
-              }`}>
-                {r.opportunity}
-              </span>
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-sky-400" />
+                <span className="text-xs text-slate-400">Organic</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-3 h-3 rounded-full bg-indigo-400" />
+                <span className="text-xs text-slate-400">Paid</span>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-export default function App() {
-  const [activePage, setActivePage] = useState('dashboard');
-  const [kpiData, setKpiData] = useState(null);
-  const [trendData, setTrendData] = useState(null);
-  const [activity, setActivity] = useState(null);
-  const [toast, setToast] = useState(null);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  // CSS injection
-  useEffect(() => {
-    const style = document.createElement('style');
-    style.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-      :root {
-        --accent: #1E3A8A;
-        --accent2: #F59E0B;
-      }
-      .glass {
-        background: rgba(255,255,255,0.04);
-        backdrop-filter: blur(20px);
-        border: 1px solid rgba(255,255,255,0.08);
-        border-radius: 12px;
-      }
-      .gradient-text {
-        background: linear-gradient(135deg, #1E3A8A, #F59E0B, #EC4899);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-      }
-      .shimmer {
-        background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%);
-        background-size: 200% 100%;
-        animation: shimmer 1.5s infinite;
-      }
-      @keyframes shimmer {
-        0% { background-position: -200% 0 }
-        100% { background-position: 200% 0 }
-      }
-      @keyframes fadeIn {
-        from { opacity:0; transform:translateY(8px) }
-        to { opacity:1; transform:translateY(0) }
-      }
-      .fade-in { animation: fadeIn 0.3s ease forwards; }
-      * { transition: all 0.2s ease; }
-    `;
-    document.head.appendChild(style);
-    return () => style.remove();
-  }, []);
-
-  // Fetch data
-  useEffect(() => {
-    async function load() {
-      const kpi = await apiFetch('/api/kpi');
-      setKpiData(kpi || MOCK_KPI_DATA);
-      const trend = await apiFetch('/api/trends');
-      setTrendData(trend || MOCK_TREND_DATA);
-      const act = await apiFetch('/api/activity');
-      setActivity(act || MOCK_ACTIVITY_DATA);
-    }
-    load();
-  }, []);
-
-  const showToast = useCallback((message, type = 'success') => {
-    setToast({ message, type });
-    setTimeout(() => setToast(null), 3000);
-  }, []);
-
-  const columns = useMemo(() => [
-    { key: 'action', label: 'Action', sortable: true },
-    { key: 'page', label: 'Page', sortable: true },
-    { key: 'status', label: 'Status', sortable: true },
-    { key: 'user', label: 'User', sortable: true },
-    { key: 'time', label: 'Time', sortable: true },
-  ], []);
-
-  // ALL hooks before any conditional return
-  const kpis = kpiData || MOCK_KPI_DATA;
-  const trends = trendData || MOCK_TREND_DATA;
-  const activities = activity || MOCK_ACTIVITY_DATA;
-
-  return (
-    <div className="flex h-screen overflow-hidden bg-[#06080f] text-slate-100">
-      {/* Mobile sidebar overlay */}
-      {sidebarOpen && (
-        <div
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
-          onClick={() => setSidebarOpen(false)}
-        />
-      )}
-
-      {/* Sidebar */}
-      <div className={`fixed lg:relative z-50 h-full transition-transform duration-300 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
-        <Sidebar activePage={activePage} setActivePage={(p) => { setActivePage(p); setSidebarOpen(false); }} />
-      </div>
-
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar onToggleSidebar={() => setSidebarOpen(!sidebarOpen)} />
-
-        <main className="flex-1 overflow-y-auto p-6">
-          <div className="max-w-7xl mx-auto">
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold gradient-text mb-1">StellarSEO Dashboard</h2>
-              <p className="text-slate-400 text-sm">AI-powered SEO that drives e-commerce brands to the top of Google</p>
-            </div>
-
-            {/* KPI Grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-              {(kpis || []).map((kpi, i) => (
-                <KPICard key={kpi.label} data={kpi} index={i} />
-              ))}
-            </div>
-
-            {/* Main content area */}
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
-              {/* Trend Chart */}
-              <div className="lg:col-span-2 glass p-5 fade-in">
-                <div className="flex items-center justify-between mb-4">
-                  <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">7-Day Traffic Trend</h3>
-                  <div className="flex items-center gap-2">
-                    <span className="w-3 h-3 rounded-full bg-yellow-400"></span>
-                    <span className="text-xs text-slate-500">Page Views</span>
-                  </div>
-                </div>
-                <div className="h-48">
-                  <LineChart data={trends} />
-                </div>
-              </div>
-
-              {/* Right panel */}
-              <div className="space-y-6">
-                <div className="glass p-5 fade-in">
-                  <QuickActions />
-                </div>
-                <div className="glass p-5 fade-in">
-                  <KeywordSearch />
-                </div>
-              </div>
-            </div>
-
-            {/* Activity Table */}
-            <div className="glass p-5 fade-in mb-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider">Recent Activity</h3>
-                <button
-                  onClick={() => showToast('Activity refreshed successfully!', 'success')}
-                  className="px-3 py-1.5 bg-yellow-500/10 text-yellow-400 text-xs font-medium rounded-lg hover:bg-yellow-500/20 transition-colors"
+          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto">
+            <defs>
+              <linearGradient id="gradOrganic" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#38BDF8" stopOpacity="0" />
+              </linearGradient>
+              <linearGradient id="gradPaid" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stopColor="#818CF8" stopOpacity="0.3" />
+                <stop offset="100%" stopColor="#818CF8" stopOpacity="0" />
+              </linearGradient>
+            </defs>
+            {/* Grid lines */}
+            {yTickValues.map((val, i) => (
+              <g key={i}>
+                <line
+                  x1={padding.left}
+                  y1={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
+                  x2={chartWidth - padding.right}
+                  y2={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
+                  stroke="rgba(255,255,255,0.05)"
+                  strokeDasharray="4 4"
+                />
+                <text
+                  x={padding.left - 8}
+                  y={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom) + 4}
+                  textAnchor="end"
+                  className="text-[10px] fill-slate-600"
                 >
-                  Refresh
-                </button>
-              </div>
-              <DataTable data={activities} columns={columns} />
-            </div>
+                  {`${(val / 1000).toFixed(0)}k`}
+                </text>
+              </g>
+            ))}
+            {/* XPanel labels */}
+            {chartData.map((d, i) => (
+              <text
+                key={i}
+                x={padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right)}
+                y={chartHeight - 8}
+                textAnchor="middle"
+                className="text-[10px] fill-slate-600"
+              >
+                {d.day}
+              </text>
+            ))}
+            {/* Areas */}
+            <path d={areaOrganic} fill="url(#gradOrganic)" />
+            <path d={areaPaid} fill="url(#gradPaid)" />
+            {/* Lines */}
+            <path d={pathOrganic} fill="none" stroke="#38BDF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            <path d={pathPaid} fill="none" stroke="#818CF8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+            {/* Dots */}
+            {pointsOrganic.map((p, i) => (
+              <circle key={`o-${i}`} cx={p.x} cy={p.y} r="3" fill="#38BDF8" stroke="#0F172A" strokeWidth="2" />
+            ))}
+            {pointsPaid.map((p, i) => (
+              <circle key={`p-${i}`} cx={p.x} cy={p.y} r="3" fill="#818CF8" stroke="#0F172A" strokeWidth="2" />
+            ))}
+          </svg>
+        </div>
 
-            {/* Stats bars */}
-            <div className="glass p-5 fade-in">
-              <h3 className="text-sm font-semibold text-slate-300 uppercase tracking-wider mb-4">Keyword Difficulty</h3>
-              <div className="h-32">
-                <BarChart data={trends} />
-              </div>
+        {/* Bar Chart */}
+        <div className="glass p-6 fade-in">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-200">Traffic Sources</h3>
+              <p className="text-xs text-slate-500">Channel distribution</p>
             </div>
           </div>
-        </main>
+          <div className="space-y-4">
+            {barData.map((item, i) => (
+              <div key={i} className="space-y-1.5">
+                <div className="flex justify-between items-center">
+                  <span className="text-xs text-slate-400">{item.name}</span>
+                  <span className="text-xs font-medium text-slate-300">{item.value}%</span>
+                </div>
+                <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                  <div
+                    className="h-full rounded-full transition-all duration-1000 ease-out"
+                    style={{
+                      width: `${(item.value / maxBar) * 100}%`,
+                      background: i === 0
+                        ? 'linear-gradient(90deg, #38BDF8, #818CF8)'
+                        : i === 1
+                        ? 'linear-gradient(90deg, #818CF8, #C084FC)'
+                        : i === 2
+                        ? 'linear-gradient(90deg, #22C55E, #4ADE80)'
+                        : i === 3
+                        ? 'linear-gradient(90deg, #F59E0B, #FBBF24)'
+                        : 'linear-gradient(90deg, #EF4444, #F87171)',
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Toast notification */}
-      {toast && (
-        <div className={`fixed bottom-6 right-6 z-50 flex items-center gap-3 px-4 py-3 rounded-lg shadow-lg fade-in ${
-          toast.type === 'success' ? 'bg-emerald-900/90 border border-emerald-700/50' : 'bg-red-900/90 border border-red-700/50'
-        }`}>
-          {toast.type === 'success' ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-400" />
-          ) : (
-            <XCircle className="w-5 h-5 text-red-400" />
-          )}
-          <span className="text-sm text-slate-200">{toast.message}</span>
-        </div>
-      )}
-    </div>
-  );
-}
+      {/* Table + Quick Actions */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* ActivityPanel Table */}
+        <div className="lg:col-span-2 glass p-6 fade-in">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-sm font-semibold text-slate-200">Recent ActivityPanel</h3>
+              <p className="text-xs text-slate-500">Latest SEO tasks and updates</p>
+            </div>
+            <button className="flex items-center gap-1 text-xs text-sky-400 hover:text-sky-300 transition-colors">
+              View all <ChevronRightPanel className="w-3 h-3" />
+            </button>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="border-b border-white/5">
+                  {[
+                    { key: 'date', label: 'Date' },
+                    { key: 'task', label: 'Task' },
+                    { key: 'domain', label: '
