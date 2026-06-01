@@ -1,13 +1,6 @@
-import shutil
-# Check where python3 actually exists
-print(shutil.which('python3'))
-# Check if we can write to a temp location
-import tempfile
-tf = tempfile.NamedTemporaryFile(mode='w', suffix='.py', delete=False, dir='/tmp')
-tf.write("import sys; print('hello from tmp'); sys.exit(0)")
-tf.close()
-print(f"Wrote to: {tf.name}")
-import subprocess
-r = subprocess.run(['python3', tf.name], capture_output=True, text=True)
-print("stdout:", r.stdout)
-print("stderr:", r.stderr)
+with open('REPO_CONTEXT.md') as f:
+    lines = f.readlines()
+print(f"Total lines: {len(lines)}")
+print(f"Last 20 lines (lines {len(lines)-19}-{len(lines)}):")
+for i, line in enumerate(lines[-20:], len(lines)-19):
+    print(f"{i:4d}: {line}", end='')
