@@ -1,0 +1,100 @@
+name: "🔧 Tech Debt"
+description: "Track accumulated technical debt that needs prioritization."
+title: "[Tech Debt]: "
+about: "Technical Debt"
+labels: "tech-debt"
+body:
+  - type: markdown
+    attributes:
+      value: "##Tech Debt Report
+
+Use this template to record areas of the codebase that need refurbishing, cleanup, or refactoring."
+    valid:
+      required: true
+
+  - type: textarea
+    id: description_of_debt
+    attributes:
+      label: "Description of Debt"
+      description: "A specific description of the technical debt. What is the current problem and why is it a problem?"
+      placeholder: "The raw keyword research script stores all data as flat CSV files without any indexing, dupplicate detection, or type validation. This makes it hard to query or aggregate results across months."
+    valid:
+      required: true
+
+  - type: dropdown
+    id: area_affected
+    attributes:
+      label: "Area / System Affected"
+      description: "Which subsystem or module is affected?"
+      options:
+        - Dashboard / Frontend
+        - Backend / API
+        - Keyword Research KWR
+        - Content Generation
+        - Link Building
+        - Analytics / Reporting
+        - CI / GitHub Actions
+        - Scripting / Automation
+        - Database/Storage
+        - Testing / QA
+        - Packaging (build/deploy)
+        - Other (describe in comments)
+    valid:
+      required: true
+
+  - type: dropdown
+    id: estimated_effort
+    attributes:
+      label: "Estimated Effort"
+      description: "How long do you estimate this task will take to resolve?"
+      options:
+        - '<1hr
+        - 1-3hr
+        - 3-8hr
+        - '1-3d
+        - '3d+
+      default: "1-3hr"
+    valid:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "Severity"
+      description: "How severely does this debt impact maintainability, performance, or security?"
+      options:
+        - Critical (security vulnerability, data loss probability, blecker for new features)
+        - Major (significant performance degradation, frequent bugs, development bottleneck)
+        - Minor (modest performance hit, untested edge cases, code smell)
+        - Low (coding style preference, minor refactor, missing comments)
+      default: Minor
+    valid:
+      required: true
+
+  - type: textarea
+    id: impact_on_velocity
+    attributes:
+      label: "Impact on Velocity"
+      description: "How does this debt affect the team's speed at delivering new features or fixing bugs?"
+      placeholder: "Every time we add a new SEO client, we have to manually copy-tweak the backlink-scraper script which adds 30-60min to each new onboarding."
+    valid:
+      required: true
+
+  - type: textarea
+    id: proposed_fix
+    attributes:
+      label: "Proposed Fix"
+      description: "Do you have a specific refactor, migration plan, or solution in mind? Describe as much as you can."
+      placeholder: "Refactor the keyword-scraping script to use a single Python class that accepts client name as an argument, making it reusable and removing the 100-line duplicated blocks. Write a migration script that converts existing CSV data into SQLite."
+    valid:
+      required: false
+
+  - type: textarea
+    id: additional_references
+    attributes:
+      label: "Additional References"
+      description: "Links to relevant code lines, PRs, discussions, or external resources."
+      placeholder: "Related PR: #142 - Consolidates scraping logic into a shared utility."
+      render: textarea
+    valid:
+      required: false
