@@ -1,17 +1,8 @@
 ```jsx
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
-import {
-  SearchPanel, BellPanel, SettingsPanel, ChevronDownPanel, TrendingUpPanel, TrendingDownPanel,
-  FileTextPanel, LinkPanel, TargetPanel, ZapPanel, BarChart3Panel, UsersPanel, ExternalLinkPanel,
-  HomePanel, PieChartPanel, FileSpreadsheet, MenuPanel, XPanel, PlusPanel, RefreshCwPanel,
-  ArrowUpDown, ArrowUpPanel, ArrowDownPanel, FilterPanel, DownloadPanel, EyePanel,
-  CheckCircle2, AlertTrianglePanel, ClockPanel, ChevronRightPanel, GripVertical,
-  GlobePanel, Sparkles, ActivityPanel, ArrowRightPanel, CopyPanel, MoreHorizontalPanel,
-  MailPanel, MessageSquarePanel, Share2, StarPanel, CalendarPanel
-} from 'lucide-react';
+import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
+import { Search, Bell, User, Menu, TrendingUp, TrendingDown, BarChart3, Globe, FileText, Settings as SettingsIcon, Activity, Zap, ArrowUpRight, ArrowDownRight, Clock, ExternalLink, CheckCircle, XCircle, AlertCircle, Loader2, Target, DollarSign, Users, Rocket, Plus, Filter, Download, Share2, ChevronDown, Edit3, Trash2, RefreshCw, PieChart, LineChart as LineChartIcon } from 'lucide-react'
 
 const BASE = window.__BACKEND_URL__ || '';
-
 async function apiFetch(path, opts = {}) {
   for (let i = 0; i < 5; i++) {
     try {
@@ -23,615 +14,658 @@ async function apiFetch(path, opts = {}) {
   return null;
 }
 
-export default function App() {
-  const [currentPage, setCurrentPage] = useState('dashboard');
-  const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [notifications, setNotifications] = useState(3);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [toast, setToast] = useState(null);
-  const [backendData, setBackendData] = useState(null);
-
-  const showToast = useCallback((message, type = 'success') => {
-    setToast({ message, type, id: Date.now() });
-    setTimeout(() => setToast(null), 3500);
-  }, []);
+function App() {
+  const [currentPage, setCurrentPage] = useState('dashboard')
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [notifications, setNotifications] = useState([])
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [showUserMenu, setShowUserMenu] = useState(false)
+  const [user, setUser] = useState({ name: 'Sarah Chen', email: 'sarah@stellar.com', avatar: null })
+  const styleRef = useRef(null)
 
   useEffect(() => {
-    const style = document.createElement('style');
+    const style = document.createElement('style')
     style.textContent = `
-      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-      :root { --accent: #00B4D8; --accent2: #1E3A5F; }
+
+      :root { --accent: #1E3A5F; --accent2: #F7931E; }
       .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
-      .gradient-text { background: linear-gradient(135deg, #00B4D8, #1E3A5F, #6366F1); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+      .gradient-text { background: linear-gradient(135deg, #1E3A5F, #F7931E, #FF6B6B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
       .shimmer { background: linear-gradient(90deg, rgba(255,255,255,0.04) 25%, rgba(255,255,255,0.08) 50%, rgba(255,255,255,0.04) 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
       @keyframes shimmer { 0% { background-position: -200% 0 } 100% { background-position: 200% 0 } }
       @keyframes fadeIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:translateY(0) } }
       .fade-in { animation: fadeIn 0.3s ease forwards; }
-      @keyframes slideIn { from { opacity:0; transform:translateY(-4px) } to { opacity:1; transform:translateY(0) } }
-      .slide-in { animation: slideIn 0.2s ease forwards; }
-      @keyframes pulse { 0%, 100% { opacity:1 } 50% { opacity:0.5 } }
-      .animate-pulse { animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite; }
-      .scrollbar-thin::-webkit-scrollbar { width: 4px; }
-      .scrollbar-thin::-webkit-scrollbar-track { background: transparent; }
-      .scrollbar-thin::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
-      .scrollbar-thin::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
-    `;
-    document.head.appendChild(style);
-    return () => document.head.removeChild(style);
-  }, []);
-
-  useEffect(() => {
-    (async () => {
-      const data = await apiFetch('/api/dashboard');
-      if (data) setBackendData(data);
-    })();
-  }, []);
-
-  const navItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: HomePanel },
-    { id: 'analytics', label: 'Analytics', icon: PieChartPanel },
-    { id: 'keyword-research', label: 'Keyword Research', icon: SearchPanel },
-    { id: 'content', label: 'Content', icon: FileTextPanel },
-    { id: 'backlinks', label: 'Backlinks', icon: LinkPanel },
-    { id: 'rank-tracker', label: 'Rank Tracker', icon: BarChart3Panel },
-    { id: 'reports', label: 'Reports', icon: FileSpreadsheet },
-    { id: 'settings', label: 'SettingsPanel', icon: SettingsPanel },
-  ];
-
-  const kpiData = (backendData && backendData.kpiData) || [
-    {
-      icon: TrendingUpPanel,
-      label: 'Organic Traffic',
-      value: '128,450',
-      delta: '+12.5%',
-      positive: true,
-      color: '#38BDF8',
-      sparkline: [35, 42, 38, 55, 48, 62, 58, 70, 65, 78],
-    },
-    {
-      icon: TargetPanel,
-      label: 'Keywords Ranked',
-      value: '3,842',
-      delta: '+8.3%',
-      positive: true,
-      color: '#818CF8',
-      sparkline: [20, 25, 28, 32, 30, 35, 40, 38, 45, 42],
-    },
-    {
-      icon: FileTextPanel,
-      label: 'Content Generated',
-      value: '1,247',
-      delta: '+24.1%',
-      positive: true,
-      color: '#22C55E',
-      sparkline: [10, 15, 18, 25, 30, 28, 35, 40, 38, 45],
-    },
-    {
-      icon: LinkPanel,
-      label: 'Backlinks Acquired',
-      value: '5,610',
-      delta: '-3.2%',
-      positive: false,
-      color: '#EF4444',
-      sparkline: [42, 45, 40, 38, 35, 32, 30, 28, 25, 22],
-    },
-  ];
-
-  const recentActivity = (backendData && backendData.recentActivity) || [
-    { id: 1, date: '2025-02-18 14:32', task: 'Keyword research completed', domain: 'stellar-shop.com', status: 'Completed', keywords: 245, difficulty: 'Medium' },
-    { id: 2, date: '2025-02-18 13:15', task: 'Content brief generated', domain: 'techgear.io', status: 'Processing', keywords: 128, difficulty: 'Low' },
-    { id: 3, date: '2025-02-18 11:48', task: 'Backlink outreach sent', domain: 'fashionhub.co', status: 'Pending', keywords: 56, difficulty: 'High' },
-    { id: 4, date: '2025-02-18 09:22', task: 'Rank tracking update', domain: 'stellar-shop.com', status: 'Completed', keywords: 389, difficulty: 'Medium' },
-    { id: 5, date: '2025-02-17 23:55', task: 'AI content generated', domain: 'organicbeauty.com', status: 'Completed', keywords: 412, difficulty: 'Low' },
-  ];
-
-  const quickActions = [
-    { id: 1, label: 'New Keyword Research', icon: SearchPanel, color: 'bg-sky-500', desc: 'Analyze keywords for any domain' },
-    { id: 2, label: 'Generate Content', icon: FileTextPanel, color: 'bg-indigo-500', desc: 'Create AI-optimized content briefs' },
-    { id: 3, label: 'Find Backlinks', icon: LinkPanel, color: 'bg-emerald-500', desc: 'Discover link building opportunities' },
-    { id: 4, label: 'Run Rank Report', icon: BarChart3Panel, color: 'bg-purple-500', desc: 'Get latest ranking positions' },
-  ];
+      @keyframes countUp { from { opacity:0; transform:translateY(10px) } to { opacity:1; transform:translateY(0) } }
+      .count-up { animation: countUp 0.5s ease forwards; }
+      ::-webkit-scrollbar { width: 6px; }
+      ::-webkit-scrollbar-track { background: transparent; }
+      ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 3px; }
+      ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.2); }
+    `
+    document.head.appendChild(style)
+    styleRef.current = style
+    return () => { if (styleRef.current) styleRef.current.remove() }
+  }, [])
 
   return (
     <div className="flex h-screen overflow-hidden bg-[#06080f] text-slate-100">
-      <Sidebar
-        navItems={navItems}
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        sidebarOpen={sidebarOpen}
-        setSidebarOpen={setSidebarOpen}
-      />
-
+      <Sidebar currentPage={currentPage} setCurrentPage={setCurrentPage} sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
       <div className="flex-1 flex flex-col overflow-hidden">
-        <TopBar
-          searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
-          notifications={notifications}
-          setNotifications={setNotifications}
-          sidebarOpen={sidebarOpen}
-          setSidebarOpen={setSidebarOpen}
-        />
-
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6 scrollbar-thin bg-[#06080f]">
-          {currentPage === 'dashboard' && (
-            <DashboardContent
-              kpiData={kpiData}
-              recentActivity={recentActivity}
-              quickActions={quickActions}
-              showToast={showToast}
-            />
-          )}
-          {currentPage !== 'dashboard' && (
-            <PagePlaceholder page={currentPage} navItems={navItems} />
-          )}
+        <TopBar user={user} notifications={notifications} setShowNotifications={setShowNotifications} showNotifications={showNotifications} setShowUserMenu={setShowUserMenu} showUserMenu={showUserMenu} setSidebarOpen={setSidebarOpen} />
+        <main className="flex-1 overflow-y-auto p-6">
+          {currentPage === 'dashboard' && <DashboardContent />}
+          {currentPage === 'analytics' && <AnalyticsContent />}
+          {currentPage === 'reports' && <ReportsContent />}
+          {currentPage === 'settings' && <SettingsContent />}
         </main>
       </div>
-
-      {toast && (
-        <Toast message={toast.message} type={toast.type} id={toast.id} />
-      )}
+      {showNotifications && <NotificationsPanel notifications={notifications} onClose={() => setShowNotifications(false)} />}
     </div>
-  );
+  )
 }
 
-function Sidebar({ navItems, currentPage, setCurrentPage, sidebarOpen, setSidebarOpen }) {
-  return (
-    <aside
-      className={`${
-        sidebarOpen ? 'w-64' : 'w-20'
-      } flex-shrink-0 flex flex-col border-r border-white/5 bg-white/[0.02] h-full transition-all duration-300 ease-in-out relative`}
-    >
-      <div className="h-14 flex items-center px-4 border-b border-white/5">
-        <div className="flex items-center gap-3 overflow-hidden">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00B4D8] to-[#1E3A5F] flex items-center justify-center flex-shrink-0">
-            <ZapPanel className="w-4 h-4 text-white" />
-          </div>
-          {sidebarOpen && (
-            <span className="font-semibold text-base whitespace-nowrap gradient-text">
-              StellarRank
-            </span>
-          )}
-        </div>
-      </div>
+function Sidebar({ currentPage, setCurrentPage, sidebarOpen, setSidebarOpen }) {
+  const navItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3Panel },
+    { id: 'analytics', label: 'Analytics', icon: PieChartPanel },
+    { id: 'reports', label: 'Reports', icon: FileTextPanel },
+    { id: 'settings', label: 'Settings', icon: SettingsIcon },
+  ]
 
-      <nav className="flex-1 py-4 px-3 space-y-1 overflow-y-auto scrollbar-thin">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const isActive = currentPage === item.id;
-          return (
+  return (
+    <>
+      <aside className={`${sidebarOpen ? 'w-64' : 'w-0'} flex-shrink-0 flex-col border-r border-white/5 bg-white/[0.02] h-full transition-all duration-300 hidden md:flex`}>
+        <div className="h-14 flex items-center px-4 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1E3A5F] to-[#F7931E] flex items-center justify-center">
+              <Rocket className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-lg">RankStellar</span>
+          </div>
+        </div>
+        <nav className="flex-1 p-4 space-y-1">
+          {(navItems || []).map(item => (
             <button
               key={item.id}
               onClick={() => setCurrentPage(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group relative ${
-                isActive
-                  ? 'bg-[#00B4D8]/15 text-[#00B4D8] border border-[#00B4D8]/20'
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                currentPage === item.id 
+                  ? 'bg-[#1E3A5F]/20 text-[#F7931E] border border-[#F7931E]/30' 
                   : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
               }`}
             >
-              <Icon className={`w-4 h-4 flex-shrink-0 ${isActive ? 'text-[#00B4D8]' : ''}`} />
-              {sidebarOpen && (
-                <span className="whitespace-nowrap truncate">{item.label}</span>
-              )}
-              {isActive && (
-                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-6 bg-[#00B4D8] rounded-r-full" />
-              )}
+              <item.icon className="w-4 h-4" />
+              {item.label}
             </button>
-          );
-        })}
-      </nav>
-
-      <div className="p-3 border-t border-white/5">
-        <div className={`glass p-3 ${!sidebarOpen && 'flex justify-center'}`}>
-          {sidebarOpen ? (
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4D8] to-[#1E3A5F] flex items-center justify-center flex-shrink-0">
-                <span className="text-xs font-bold text-white">JD</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-xs font-medium text-slate-200 truncate">John Doe</p>
-                <p className="text-[10px] text-slate-500 truncate">Enterprise Plan</p>
-              </div>
-              <ChevronDownPanel className="w-3 h-3 text-slate-500 flex-shrink-0" />
-            </div>
-          ) : (
-            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#00B4D8] to-[#1E3A5F] flex items-center justify-center">
-              <span className="text-xs font-bold text-white">JD</span>
-            </div>
-          )}
+          ))}
+        </nav>
+        <div className="p-4 border-t border-white/5">
+          <div className="glass p-3 text-xs text-slate-400">
+            <p className="font-medium text-slate-300 mb-1">AI-Powered SEO</p>
+            <p className="mb-2">Unlock advanced analytics</p>
+            <button className="w-full py-1.5 px-3 rounded-lg bg-[#F7931E] text-[#06080f] font-medium hover:bg-[#e6841b] transition-colors text-xs">
+              Upgrade to Pro
+            </button>
+          </div>
         </div>
-      </div>
-    </aside>
-  );
+      </aside>
+      <button 
+        onClick={() => setSidebarOpen(!sidebarOpen)}
+        className="md:hidden fixed top-4 left-4 z-50 p-2 glass"
+      >
+        <MenuPanel className="w-5 h-5" />
+      </button>
+    </>
+  )
 }
 
-function TopBar({ searchQuery, setSearchQuery, notifications, setNotifications, sidebarOpen, setSidebarOpen }) {
-  const [showNotifications, setShowNotifications] = useState(false);
-  const notifRef = useRef(null);
-
-  useEffect(() => {
-    const handleClick = (e) => {
-      if (notifRef.current && !notifRef.current.contains(e.target)) {
-        setShowNotifications(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClick);
-    return () => document.removeEventListener('mousedown', handleClick);
-  }, []);
-
-  const dummyNotifs = [
-    { id: 1, text: 'Rank tracking report is ready', time: '5m ago', unread: true },
-    { id: 2, text: '3 new backlink opportunities found', time: '1h ago', unread: true },
-    { id: 3, text: 'Content generation completed', time: '3h ago', unread: true },
-  ];
-
+function TopBar({ user, notifications, setShowNotifications, showNotifications, setShowUserMenu, showUserMenu, setSidebarOpen }) {
   return (
-    <header className="h-14 flex items-center justify-between px-4 lg:px-6 border-b border-white/5 flex-shrink-0 bg-[#06080f]">
+    <header className="h-14 flex items-center justify-between px-6 border-b border-white/5 flex-shrink-0 bg-[#06080f]/80 backdrop-blur-xl">
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="p-2 rounded-lg hover:bg-white/5 transition-colors"
-        >
-          {sidebarOpen ? <XPanel className="w-4 h-4" /> : <MenuPanel className="w-4 h-4" />}
+        <button onClick={() => setSidebarOpen(prev => !prev)} className="md:hidden p-1 hover:bg-white/5 rounded-lg">
+          <MenuPanel className="w-5 h-5" />
         </button>
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/5 focus-within:border-[#00B4D8]/50 transition-all">
-          <SearchPanel className="w-4 h-4 text-slate-500" />
-          <input
-            type="text"
-            placeholder="SearchPanel domain or keyword..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="bg-transparent text-sm outline-none w-48 lg:w-64 placeholder:text-slate-600"
+        <div className="relative">
+          <SearchPanel className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <input 
+            type="text" 
+            placeholder="SearchPanel keywords, domains..." 
+            className="w-72 pl-10 pr-4 py-2 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#F7931E]/50 focus:ring-1 focus:ring-[#F7931E]/20 transition-all"
           />
         </div>
       </div>
-
-      <div className="flex items-center gap-2">
-        <div ref={notifRef} className="relative">
-          <button
+      <div className="flex items-center gap-4">
+        <div className="relative">
+          <button 
             onClick={() => setShowNotifications(!showNotifications)}
-            className="p-2 rounded-lg hover:bg-white/5 transition-colors relative"
+            className="relative p-2 hover:bg-white/5 rounded-lg transition-colors"
           >
-            <BellPanel className="w-4 h-4" />
-            {notifications > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-[18px] h-[18px] bg-[#00B4D8] text-white text-[10px] font-bold rounded-full flex items-center justify-center animate-pulse">
-                {notifications}
-              </span>
+            <BellPanel className="w-5 h-5 text-slate-400" />
+            {(notifications || []).length > 0 && (
+              <span className="absolute top-1 right-1 w-2 h-2 bg-[#F7931E] rounded-full" />
             )}
           </button>
-          {showNotifications && (
-            <div className="absolute right-0 top-full mt-2 w-72 glass p-2 z-50 slide-in shadow-2xl">
-              <div className="flex items-center justify-between px-3 py-2">
-                <p className="text-xs font-semibold text-slate-300">Notifications</p>
-                <button
-                  onClick={() => setNotifications(0)}
-                  className="text-[10px] text-[#00B4D8] hover:text-[#00B4D8]/80"
-                >
-                  Mark all read
-                </button>
-              </div>
-              {(dummyNotifs || []).slice(0, notifications).map((n) => (
-                <div key={n.id} className="flex items-start gap-3 p-3 hover:bg-white/5 rounded-lg transition-colors">
-                  <div className={`w-2 h-2 rounded-full mt-1.5 flex-shrink-0 ${n.unread ? 'bg-[#00B4D8]' : 'bg-slate-600'}`} />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs text-slate-300 truncate">{n.text}</p>
-                    <p className="text-[10px] text-slate-600 mt-0.5">{n.time}</p>
-                  </div>
-                </div>
-              ))}
+        </div>
+        <div className="relative">
+          <button 
+            onClick={() => setShowUserMenu(!showUserMenu)}
+            className="flex items-center gap-2 p-1.5 hover:bg-white/5 rounded-lg transition-colors"
+          >
+            <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#1E3A5F] to-[#F7931E] flex items-center justify-center">
+              <UserPanel className="w-4 h-4 text-white" />
+            </div>
+            <div className="hidden sm:block text-left">
+              <p className="text-sm font-medium text-slate-200">{user.name}</p>
+              <p className="text-xs text-slate-500">{user.email}</p>
+            </div>
+          </button>
+          {showUserMenu && (
+            <div className="absolute right-0 top-12 w-48 glass border border-white/10 rounded-xl py-2 shadow-xl z-50">
+              <button className="w-full px-4 py-2 text-sm text-slate-300 hover:bg-white/5 text-left">Profile</button>
+              <button className="w-full px-4 py-2 text-sm text-slate-300 hover:bg-white/5 text-left" onClick={() => setCurrentPage('settings')}>Settings</button>
+              <button className="w-full px-4 py-2 text-sm text-red-400 hover:bg-white/5 text-left border-t border-white/5 mt-1 pt-2">Sign out</button>
             </div>
           )}
         </div>
-        <button className="p-2 rounded-lg hover:bg-white/5 transition-colors">
-          <SettingsPanel className="w-4 h-4" />
-        </button>
       </div>
     </header>
-  );
+  )
 }
 
-function DashboardContent({ kpiData, recentActivity, quickActions, showToast }) {
-  const [sortField, setSortField] = useState('date');
-  const [sortDir, setSortDir] = useState('desc');
-  const [animatedValues, setAnimatedValues] = useState((kpiData || []).map(() => 0));
-  const animRef = useRef(false);
-
-  const chartData = useMemo(() => [
-    { day: 'Mon', organic: 45000, paid: 22000, backlinks: 1800 },
-    { day: 'Tue', organic: 52000, paid: 24000, backlinks: 1950 },
-    { day: 'Wed', organic: 48000, paid: 21000, backlinks: 2100 },
-    { day: 'Thu', organic: 61000, paid: 28000, backlinks: 2250 },
-    { day: 'Fri', organic: 58000, paid: 26000, backlinks: 2400 },
-    { day: 'Sat', organic: 72000, paid: 31000, backlinks: 2600 },
-    { day: 'Sun', organic: 78000, paid: 33000, backlinks: 2850 },
-  ], []);
-
-  const barData = useMemo(() => [
-    { name: 'SEO', value: 65 },
-    { name: 'Direct', value: 45 },
-    { name: 'Social', value: 30 },
-    { name: 'Referral', value: 38 },
-    { name: 'Paid', value: 22 },
-  ], []);
-
-  useEffect(() => {
-    if (animRef.current) return;
-    animRef.current = true;
-    const targets = (kpiData || []).map((k) => parseInt(k.value.replace(/,/g, '')));
-    const duration = 1500;
-    const steps = 60;
-    let step = 0;
-    const interval = setInterval(() => {
-      step++;
-      setAnimatedValues(targets.map((t) => Math.round((t * step) / steps)));
-      if (step >= steps) clearInterval(interval);
-    }, duration / steps);
-    return () => clearInterval(interval);
-  }, [kpiData]);
-
-  const handleSort = (field) => {
-    if (sortField === field) {
-      setSortDir(sortDir === 'asc' ? 'desc' : 'asc');
-    } else {
-      setSortField(field);
-      setSortDir('asc');
-    }
-  };
-
-  const sortedActivity = useMemo(() => {
-    const sorted = [...(recentActivity || [])];
-    sorted.sort((a, b) => {
-      let va = a[sortField];
-      let vb = b[sortField];
-      if (typeof va === 'string') va = va.toLowerCase();
-      if (typeof vb === 'string') vb = vb.toLowerCase();
-      if (va < vb) return sortDir === 'asc' ? -1 : 1;
-      if (va > vb) return sortDir === 'asc' ? 1 : -1;
-      return 0;
-    });
-    return sorted;
-  }, [recentActivity, sortField, sortDir]);
-
-  const SortIcon = ({ field }) => {
-    if (sortField !== field) return <ArrowUpDown className="w-3 h-3 inline ml-1 opacity-30" />;
-    return sortDir === 'asc' ? <ArrowUpPanel className="w-3 h-3 inline ml-1 text-[#00B4D8]" /> : <ArrowDownPanel className="w-3 h-3 inline ml-1 text-[#00B4D8]" />;
-  };
-
-  const maxVal = Math.max(...chartData.map((d) => Math.max(d.organic, d.paid)));
-  const maxBar = Math.max(...barData.map((d) => d.value));
-  const chartWidth = 600;
-  const chartHeight = 220;
-  const padding = { top: 20, right: 30, bottom: 35, left: 50 };
-
-  const pointsOrganic = chartData.map((d, i) => ({
-    x: padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right),
-    y: padding.top + (1 - d.organic / (maxVal * 1.1)) * (chartHeight - padding.top - padding.bottom),
-  }));
-  const pointsPaid = chartData.map((d, i) => ({
-    x: padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right),
-    y: padding.top + (1 - d.paid / (maxVal * 1.1)) * (chartHeight - padding.top - padding.bottom),
-  }));
-
-  const pathOrganic = `M${pointsOrganic.map((p) => `${p.x},${p.y}`).join(' L')}`;
-  const pathPaid = `M${pointsPaid.map((p) => `${p.x},${p.y}`).join(' L')}`;
-  const areaOrganic = `${pathOrganic} L${pointsOrganic[pointsOrganic.length - 1].x},${chartHeight - padding.bottom} L${pointsOrganic[0].x},${chartHeight - padding.bottom} Z`;
-  const areaPaid = `${pathPaid} L${pointsPaid[pointsPaid.length - 1].x},${chartHeight - padding.bottom} L${pointsPaid[0].x},${chartHeight - padding.bottom} Z`;
-
-  const yTicks = 5;
-  const yTickValues = Array.from({ length: yTicks }, (_, i) => Math.round((maxVal * 1.1 * i) / (yTicks - 1)));
+function NotificationsPanel({ notifications, onClose }) {
+  const mockNotifications = [
+    { id: 1, title: 'Keyword Rank Improved', message: '"organic skincare" moved to position #3', time: '2 min ago', type: 'success' },
+    { id: 2, title: 'Content Generated', message: 'New blog post published for "best moisturizer"', time: '15 min ago', type: 'info' },
+    { id: 3, title: 'Ranking Alert', message: '"vegan makeup" dropped from #2 to #5', time: '1 hour ago', type: 'warning' },
+  ]
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold gradient-text">Dashboard</h1>
-          <p className="text-sm text-slate-400 mt-1">Your SEO performance at a glance</p>
-        </div>
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-white/5 border border-white/10 rounded-xl hover:bg-white/10 transition-all">
-            <CalendarPanel className="w-4 h-4" /> Last 7 days
-          </button>
-          <button
-            onClick={() => showToast('Report exported successfully', 'success')}
-            className="flex items-center gap-2 px-4 py-2 text-sm font-medium bg-[#00B4D8]/20 border border-[#00B4D8]/30 text-[#00B4D8] rounded-xl hover:bg-[#00B4D8]/30 transition-all"
-          >
-            <DownloadPanel className="w-4 h-4" /> Export
-          </button>
-        </div>
+    <div className="fixed right-4 top-16 w-80 glass border border-white/10 rounded-xl p-4 shadow-2xl z-50 fade-in" style={{ maxHeight: '400px', overflowY: 'auto' }}>
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-slate-200">Notifications</h3>
+        <button onClick={onClose} className="p-1 hover:bg-white/5 rounded-lg transition-colors">
+          <XCirclePanel className="w-4 h-4 text-slate-400" />
+        </button>
       </div>
-
-      {/* KPI Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
-        {kpiData.map((kpi, idx) => (
-          <div key={idx} className="glass p-5 fade-in" style={{ animationDelay: `${idx * 0.1}s` }}>
-            <div className="flex items-start justify-between mb-4">
-              <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center">
-                <kpi.icon className="w-5 h-5" style={{ color: kpi.color }} />
-              </div>
-              <span className={`text-xs font-medium px-2 py-1 rounded-full ${
-                kpi.positive ? 'bg-emerald-500/10 text-emerald-400' : 'bg-red-500/10 text-red-400'
-              }`}>
-                {kpi.delta}
-              </span>
+      <div className="space-y-3">
+        {(mockNotifications || []).map(n => (
+          <div key={n.id} className="p-3 bg-white/[0.02] rounded-lg border border-white/5 hover:bg-white/[0.04] transition-colors cursor-pointer">
+            <div className="flex items-center gap-2 mb-1">
+              {n.type === 'success' && <CheckCirclePanel className="w-3 h-3 text-green-400" />}
+              {n.type === 'warning' && <AlertCirclePanel className="w-3 h-3 text-yellow-400" />}
+              {n.type === 'info' && <Loader2 className="w-3 h-3 text-blue-400" />}
+              <p className="text-xs font-medium text-slate-300">{n.title}</p>
             </div>
-            <p className="text-2xl font-bold text-white mb-1">
-              {animatedValues[idx]?.toLocaleString() || '0'}
-            </p>
-            <p className="text-xs text-slate-400">{kpi.label}</p>
-            <div className="mt-3 h-8 flex items-end gap-0.5">
-              {kpi.sparkline.map((v, i) => (
-                <div
-                  key={i}
-                  className="flex-1 rounded-sm transition-all duration-300"
-                  style={{
-                    height: `${(v / Math.max(...kpi.sparkline)) * 100}%`,
-                    background: kpi.color,
-                    opacity: 0.3 + (v / Math.max(...kpi.sparkline)) * 0.5,
-                  }}
-                />
-              ))}
-            </div>
+            <p className="text-xs text-slate-500 mb-1">{n.message}</p>
+            <p className="text-[10px] text-slate-600">{n.time}</p>
           </div>
         ))}
       </div>
+    </div>
+  )
+}
 
-      {/* Charts Section */}
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-6">
-        <div className="xl:col-span-2 glass p-5 fade-in">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-sm font-semibold text-slate-300">Traffic Overview</h3>
-            <div className="flex items-center gap-3">
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-[#00B4D8]" />
-                <span className="text-[10px] text-slate-500">Organic</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-[#1E3A5F]" />
-                <span className="text-[10px] text-slate-500">Paid</span>
-              </div>
-            </div>
-          </div>
-          <svg viewBox={`0 0 ${chartWidth} ${chartHeight}`} className="w-full h-auto" style={{ maxHeight: '220px' }}>
-            <defs>
-              <linearGradient id="organicGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#00B4D8" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#00B4D8" stopOpacity="0" />
-              </linearGradient>
-              <linearGradient id="paidGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#1E3A5F" stopOpacity="0.3" />
-                <stop offset="100%" stopColor="#1E3A5F" stopOpacity="0" />
-              </linearGradient>
-            </defs>
-            {/* Grid lines */}
-            {yTickValues.map((v, i) => (
-              <g key={i}>
-                <line x1={padding.left} y1={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
-                  x2={chartWidth - padding.right} y2={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom)}
-                  stroke="rgba(255,255,255,0.05)" strokeWidth="1" />
-                <text x={padding.left - 8} y={padding.top + (i / (yTicks - 1)) * (chartHeight - padding.top - padding.bottom) + 3}
-                  textAnchor="end" className="text-[9px]" fill="rgba(255,255,255,0.3)">
-                  {v >= 1000 ? `${(v / 1000).toFixed(0)}k` : v}
-                </text>
-              </g>
-            ))}
-            {/* XPanel axis labels */}
-            {chartData.map((d, i) => (
-              <text key={i} x={padding.left + (i / (chartData.length - 1)) * (chartWidth - padding.left - padding.right)}
-                y={chartHeight - 8} textAnchor="middle" className="text-[9px]" fill="rgba(255,255,255,0.3)">
-                {d.day}
-              </text>
-            ))}
-            {/* Area fills */}
-            <path d={areaOrganic} fill="url(#organicGrad)" className="transition-all duration-1000" />
-            <path d={areaPaid} fill="url(#paidGrad)" className="transition-all duration-1000" />
-            {/* Lines */}
-            <path d={pathOrganic} fill="none" stroke="#00B4D8" strokeWidth="2" className="transition-all duration-1000" />
-            <path d={pathPaid} fill="none" stroke="#1E3A5F" strokeWidth="2" strokeDasharray="4,2" className="transition-all duration-1000" />
-            {/* Dots on organic */}
-            {pointsOrganic.map((p, i) => (
-              <circle key={i} cx={p.x} cy={p.y} r="3" fill="#00B4D8" stroke="#06080f" strokeWidth="1.5" />
-            ))}
-          </svg>
+function KPICard({ icon: Icon, label, value, delta, color, format }) {
+  const [displayValue, setDisplayValue] = useState(0)
+  const targetValue = typeof value === 'number' ? value : parseInt(value) || 0
+
+  useEffect(() => {
+    let start = 0
+    const duration = 1000
+    const startTime = Date.now()
+    const timer = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      start = Math.floor(targetValue * eased)
+      setDisplayValue(start)
+      if (progress >= 1) clearInterval(timer)
+    }, 16)
+    return () => clearInterval(timer)
+  }, [targetValue])
+
+  const formattedValue = useMemo(() => {
+    if (format === 'currency') return `${(displayValue).toLocaleString()}`
+    if (format === 'percentage') return `${displayValue}%`
+    if (format === 'decimal') return displayValue.toFixed(1)
+    return displayValue.toLocaleString()
+  }, [displayValue, format])
+
+  return (
+    <div className="glass p-5 fade-in hover:bg-white/[0.06] transition-all duration-300 cursor-pointer group">
+      <div className="flex items-start justify-between mb-3">
+        <div className={`p-2 rounded-lg ${color || 'bg-[#1E3A5F]/20'}`}>
+          <Icon className={`w-5 h-5 ${color ? `text-[#F7931E]` : 'text-[#F7931E]'}`} />
         </div>
+        {delta !== undefined && (
+          <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
+            delta >= 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+          }`}>
+            {delta >= 0 ? <ArrowUpRightPanel className="w-3 h-3" /> : <ArrowDownRightPanel className="w-3 h-3" />}
+            {Math.abs(delta)}%
+          </span>
+        )}
+      </div>
+      <p className="text-sm text-slate-400 mb-1">{label}</p>
+      <p className="text-2xl font-bold count-up text-slate-100">
+        {formattedValue}
+      </p>
+    </div>
+  )
+}
 
-        <div className="glass p-5 fade-in">
-          <h3 className="text-sm font-semibold text-slate-300 mb-4">Traffic Sources</h3>
-          <div className="space-y-3">
-            {barData.map((item, i) => (
-              <div key={i} className="fade-in" style={{ animationDelay: `${i * 0.1}s` }}>
-                <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-slate-400">{item.name}</span>
-                  <span className="text-xs font-medium text-slate-300">{item.value}%</span>
-                </div>
-                <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                  <div
-                    className="h-full rounded-full transition-all duration-1000 ease-out"
-                    style={{
-                      width: `${(item.value / maxBar) * 100}%`,
-                      background: `linear-gradient(90deg, ${['#00B4D8', '#1E3A5F', '#6366F1', '#22C55E', '#F59E0B'][i]}, ${['#38BDF8', '#2E4A7F', '#818CF8', '#4ADE80', '#FBBF24'][i]})`,
-                    }}
-                  />
-                </div>
-              </div>
+function LineChart({ data, color, gradientId }) {
+  const [animate, setAnimate] = useState(false)
+  const width = 600
+  const height = 200
+
+  useEffect(() => {
+    setTimeout(() => setAnimate(true), 100)
+  }, [])
+
+  const chartData = data || []
+  const maxVal = chartData.length > 0 ? Math.max(...chartData.map(d => d.value)) : 100
+  const minVal = chartData.length > 0 ? Math.min(...chartData.map(d => d.value)) : 0
+  const range = maxVal - minVal || 1
+
+  const points = useMemo(() => {
+    return chartData.map((d, i) => {
+      const x = (i / (chartData.length - 1 || 1)) * width
+      const y = height - ((d.value - minVal) / range) * (height - 40) - 20
+      return `${x},${y}`
+    }).join(' ')
+  }, [chartData, animate])
+
+  return (
+    <div className="glass p-5 fade-in">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-slate-300">Keyword Rankings (7 days)</h3>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1 text-xs text-slate-500">
+            <div className="w-2 h-2 rounded-full bg-[#F7931E]" />
+            Avg Position
+          </span>
+        </div>
+      </div>
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+        <defs>
+          <linearGradient id={gradientId || 'lineGradient'} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color || '#F7931E'} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={color || '#F7931E'} stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="lineStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={color || '#1E3A5F'} />
+            <stop offset="100%" stopColor={color || '#F7931E'} />
+          </linearGradient>
+        </defs>
+        <polygon
+          points={`0,${height} ${points} ${width},${height}`}
+          fill={`url(#${gradientId || 'lineGradient'})`}
+          className="transition-all duration-1000"
+          style={{ opacity: animate ? 1 : 0 }}
+        />
+        <polyline
+          points={points}
+          fill="none"
+          stroke="url(#lineStroke)"
+          strokeWidth="2"
+          className="transition-all duration-1000"
+          style={{ 
+            strokeDasharray: width * 2,
+            strokeDashoffset: animate ? 0 : width * 2,
+          }}
+        />
+        {(chartData || []).map((d, i) => {
+          const x = (i / (chartData.length - 1 || 1)) * width
+          const y = height - ((d.value - minVal) / range) * (height - 40) - 20
+          return (
+            <circle
+              key={i}
+              cx={x}
+              cy={y}
+              r="3"
+              fill={color || '#F7931E'}
+              className="transition-all duration-500"
+              style={{ opacity: animate ? 1 : 0 }}
+            />
+          )
+        })}
+        {(chartData || []).map((d, i) => (
+          <text
+            key={i}
+            x={(i / (chartData.length - 1 || 1)) * width}
+            y={height - 5}
+            textAnchor="middle"
+            className="text-[10px] fill-slate-500"
+          >
+            {d.day}
+          </text>
+        ))}
+      </svg>
+    </div>
+  )
+}
+
+function BarChart({ data, color, title }) {
+  const [animate, setAnimate] = useState(false)
+  const width = 400
+  const height = 200
+
+  useEffect(() => {
+    setTimeout(() => setAnimate(true), 200)
+  }, [])
+
+  const chartData = data || []
+  const maxVal = chartData.length > 0 ? Math.max(...chartData.map(d => d.value)) : 100
+
+  return (
+    <div className="glass p-5 fade-in">
+      <h3 className="text-sm font-medium text-slate-300 mb-4">{title || 'Traffic Sources'}</h3>
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+        {(chartData || []).map((d, i) => {
+          const barWidth = width / (chartData.length * 2.5)
+          const x = (i * (width / chartData.length)) + (width / (chartData.length * 2))
+          const barHeight = animate ? (d.value / maxVal) * (height - 40) : 0
+          return (
+            <g key={i}>
+              <rect
+                x={x}
+                y={height - 20 - barHeight}
+                width={barWidth}
+                height={barHeight}
+                fill={color || '#F7931E'}
+                rx="3"
+                className="transition-all duration-500"
+                style={{ transitionDelay: `${i * 100}ms` }}
+              />
+              <text
+                x={x + barWidth / 2}
+                y={height - 5}
+                textAnchor="middle"
+                className="text-[10px] fill-slate-500"
+              >
+                {d.label}
+              </text>
+              <text
+                x={x + barWidth / 2}
+                y={height - 25 - barHeight}
+                textAnchor="middle"
+                className="text-[10px] fill-slate-400"
+              >
+                {d.value}%
+              </text>
+            </g>
+          )
+        })}
+      </svg>
+    </div>
+  )
+}
+
+function DataTable({ columns, data, onSort, sortConfig }) {
+  const [sortField, setSortField] = useState(null)
+  const [sortDirection, setSortDirection] = useState('asc')
+
+  const handleSort = (field) => {
+    const newDirection = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc'
+    setSortField(field)
+    setSortDirection(newDirection)
+    onSort && onSort(field, newDirection)
+  }
+
+  const sortedData = useMemo(() => {
+    if (!sortField || !data) return data || []
+    return [...data].sort((a, b) => {
+      if (a[sortField] < b[sortField]) return sortDirection === 'asc' ? -1 : 1
+      if (a[sortField] > b[sortField]) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [data, sortField, sortDirection])
+
+  return (
+    <div className="glass overflow-hidden fade-in">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-white/5">
+              {(columns || []).map(col => (
+                <th
+                  key={col.key}
+                  onClick={() => col.sortable && handleSort(col.key)}
+                  className={`px-4 py-3 text-xs font-medium text-slate-400 text-left ${col.sortable ? 'cursor-pointer hover:text-slate-200' : ''}`}
+                >
+                  <div className="flex items-center gap-1">
+                    {col.label}
+                    {sortField === col.key && (
+                      <span className="text-[#F7931E]">{sortDirection === 'asc' ? '↑' : '↓'}</span>
+                    )}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {(sortedData || []).map((row, i) => (
+              <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                {(columns || []).map(col => (
+                  <td key={col.key} className="px-4 py-3 text-sm text-slate-300">
+                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                  </td>
+                ))}
+              </tr>
             ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
+
+function DashboardContent() {
+  const [kpiData, setKpiData] = useState(null)
+  const [chartData, setChartData] = useState(null)
+  const [activityData, setActivityData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const mockKpiData = useMemo(() => ({
+    keywordsTracked: 2847,
+    keywordsTrackedDelta: 12.5,
+    organicTraffic: 152341,
+    organicTrafficDelta: -3.2,
+    backlinksBuilt: 8976,
+    backlinksBuiltDelta: 8.1,
+    avgPosition: 4.3,
+    avgPositionDelta: -15.3
+  }), [])
+
+  const mockChartData = useMemo(() => [
+    { day: 'Mon', value: 45 },
+    { day: 'Tue', value: 52 },
+    { day: 'Wed', value: 48 },
+    { day: 'Thu', value: 61 },
+    { day: 'Fri', value: 58 },
+    { day: 'Sat', value: 72 },
+    { day: 'Sun', value: 68 }
+  ], [])
+
+  const mockBarData = useMemo(() => [
+    { label: 'Organic', value: 45 },
+    { label: 'Direct', value: 25 },
+    { label: 'Social', value: 18 },
+    { label: 'Referral', value: 12 }
+  ], [])
+
+  const mockActivityData = useMemo(() => [
+    { time: '2 min ago', action: 'Keyword update', keyword: 'organic skincare products', status: 'completed', details: 'Rank improved to #3' },
+    { time: '15 min ago', action: 'Content generated', keyword: 'best face moisturizer 2024', status: 'completed', details: 'Blog post published' },
+    { time: '1 hour ago', action: 'Link outreach', keyword: 'buy natural cosmetics', status: 'pending', details: 'Email sent to 5 bloggers' },
+    { time: '3 hours ago', action: 'Ranking alert', keyword: 'vegan makeup brands', status: 'warning', details: 'Dropped from #2 to #5' },
+    { time: '5 hours ago', action: 'Backlink found', keyword: 'organic hair products', status: 'completed', details: 'New backlink from .edu domain' }
+  ], [])
+
+  const columns = useMemo(() => [
+    { key: 'time', label: 'Time', sortable: true },
+    { key: 'action', label: 'Action', sortable: true },
+    { key: 'keyword', label: 'Keyword', sortable: true },
+    { key: 'status', label: 'Status', sortable: true, render: (val) => (
+      <span className={`flex items-center gap-1 text-xs ${
+        val === 'completed' ? 'text-green-400' : 
+        val === 'pending' ? 'text-yellow-400' : 'text-red-400'
+      }`}>
+        {val === 'completed' ? <CheckCirclePanel className="w-3 h-3" /> : 
+         val === 'pending' ? <Loader2 className="w-3 h-3 animate-spin" /> : 
+         <AlertCirclePanel className="w-3 h-3" />}
+        {val}
+      </span>
+    )},
+    { key: 'details', label: 'Details', sortable: false }
+  ], [])
+
+  useEffect(() => {
+    async function fetchData() {
+      const [kpi, chart, activity] = await Promise.all([
+        apiFetch('/api/dashboard/kpi'),
+        apiFetch('/api/dashboard/chart'),
+        apiFetch('/api/dashboard/activity')
+      ])
+      setKpiData(kpi || mockKpiData)
+      setChartData(chart || mockChartData)
+      setActivityData(activity || mockActivityData)
+      setLoading(false)
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        {[1,2,3,4].map(i => (
+          <div key={i} className="glass p-5 shimmer h-32" />
+        ))}
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold gradient-text mb-1">Dashboard</h1>
+        <p className="text-sm text-slate-500">Welcome back, Sarah! Here's your SEO overview.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <KPICard icon={TargetPanel} label="Keywords Tracked" value={kpiData.keywordsTracked} delta={kpiData.keywordsTrackedDelta} color="bg-blue-500/10" />
+        <KPICard icon={UsersPanel} label="Organic Traffic" value={kpiData.organicTraffic} delta={kpiData.organicTrafficDelta} color="bg-green-500/10" />
+        <KPICard icon={GlobePanel} label="Backlinks Built" value={kpiData.backlinksBuilt} delta={kpiData.backlinksBuiltDelta} color="bg-purple-500/10" />
+        <KPICard icon={BarChart3Panel} label="Avg. Position" value={kpiData.avgPosition} delta={kpiData.avgPositionDelta} color="bg-orange-500/10" format="decimal" />
+      </div>
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        <div className="xl:col-span-2">
+          <LineChart data={chartData} color="#F7931E" gradientId="dashboardLineGradient" />
+        </div>
+        <div>
+          <BarChart data={mockBarData} color="#1E3A5F" title="Traffic Sources" />
+        </div>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-slate-300 mb-3">Recent ActivityPanel</h3>
+        <DataTable columns={columns} data={activityData} />
+      </div>
+    </div>
+  )
+}
+
+function AnalyticsContent() {
+  const [analyticsData, setAnalyticsData] = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  const mockAnalyticsData = useMemo(() => ({
+    topKeywords: [
+      { keyword: 'organic skincare', volume: 24500, difficulty: 42, position: 3 },
+      { keyword: 'vegan makeup', volume: 18900, difficulty: 58, position: 5 },
+      { keyword: 'natural beauty', volume: 15300, difficulty: 35, position: 2 },
+      { keyword: 'clean cosmetics', volume: 12200, difficulty: 28, position: 4 },
+      { keyword: 'sustainable beauty', volume: 9800, difficulty: 45, position: 6 },
+    ],
+    siteHealth: 87,
+    pageSpeed: 92,
+    mobileScore: 78
+  }), [])
+
+  const keywordColumns = useMemo(() => [
+    { key: 'keyword', label: 'Keyword', sortable: true },
+    { key: 'volume', label: 'SearchPanel Volume', sortable: true },
+    { key: 'difficulty', label: 'Difficulty', sortable: true, render: (val) => (
+      <div className="flex items-center gap-2">
+        <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 rounded-full" style={{ width: `${val}%` }} />
+        </div>
+        <span className="text-xs text-slate-400">{val}</span>
+      </div>
+    )},
+    { key: 'position', label: 'Position', sortable: true, render: (val) => (
+      <span className={`text-xs font-medium ${val <= 3 ? 'text-green-400' : val <= 5 ? 'text-yellow-400' : 'text-red-400'}`}>
+        #{val}
+      </span>
+    )}
+  ], [])
+
+  useEffect(() => {
+    async function fetchData() {
+      const data = await apiFetch('/api/analytics')
+      setAnalyticsData(data || mockAnalyticsData)
+      setLoading(false)
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return <div className="space-y-6">
+      {[1,2,3].map(i => <div key={i} className="glass p-5 shimmer h-32" />)}
+    </div>
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold gradient-text mb-1">Analytics</h1>
+        <p className="text-sm text-slate-500">Deep dive into your SEO performance metrics.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="glass p-5 fade-in text-center">
+          <p className="text-sm text-slate-400 mb-1">Site Health</p>
+          <div className="text-3xl font-bold text-green-400">{mockAnalyticsData.siteHealth}%</div>
+          <div className="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-green-400 to-green-300 rounded-full" style={{ width: `${mockAnalyticsData.siteHealth}%` }} />
+          </div>
+        </div>
+        <div className="glass p-5 fade-in text-center">
+          <p className="text-sm text-slate-400 mb-1">Page Speed</p>
+          <div className="text-3xl font-bold text-blue-400">{mockAnalyticsData.pageSpeed}/100</div>
+          <div className="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-400 to-blue-300 rounded-full" style={{ width: `${mockAnalyticsData.pageSpeed}%` }} />
+          </div>
+        </div>
+        <div className="glass p-5 fade-in text-center">
+          <p className="text-sm text-slate-400 mb-1">Mobile Score</p>
+          <div className="text-3xl font-bold text-orange-400">{mockAnalyticsData.mobileScore}/100</div>
+          <div className="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-orange-400 to-orange-300 rounded-full" style={{ width: `${mockAnalyticsData.mobileScore}%` }} />
           </div>
         </div>
       </div>
+      <div>
+        <h3 className="text-sm font-medium text-slate-300 mb-3">Top Keywords</h3>
+        <DataTable columns={keywordColumns} data={mockAnalyticsData.topKeywords} />
+      </div>
+    </div>
+  )
+}
 
-      {/* Recent ActivityPanel Table + Quick Actions */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-4">
-        <div className="xl:col-span-3 glass overflow-hidden fade-in">
-          <div className="flex items-center justify-between p-4 border-b border-white/5">
-            <h3 className="text-sm font-semibold text-slate-300">Recent ActivityPanel</h3>
-            <button className="flex items-center gap-1 text-xs text-[#00B4D8] hover:text-[#00B4D8]/80 transition-colors">
-              View All <ArrowRightPanel className="w-3 h-3" />
-            </button>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-xs">
-              <thead>
-                <tr className="border-b border-white/5 bg-white/[0.02]">
-                  <th
-                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
-                    onClick={() => handleSort('date')}
-                  >
-                    Date <SortIcon field="date" />
-                  </th>
-                  <th
-                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
-                    onClick={() => handleSort('task')}
-                  >
-                    Task <SortIcon field="task" />
-                  </th>
-                  <th
-                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
-                    onClick={() => handleSort('domain')}
-                  >
-                    Domain <SortIcon field="domain" />
-                  </th>
-                  <th
-                    className="text-left p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
-                    onClick={() => handleSort('status')}
-                  >
-                    Status <SortIcon field="status" />
-                  </th>
-                  <th
-                    className="text-right p-3 font-medium text-slate-500 cursor-pointer hover:text-slate-300 transition-colors"
-                    onClick={() => handleSort('keywords')}
-                  >
-                    Keywords <SortIcon field="keywords" />
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedActivity.map((row, idx) => (
-                  <tr key={row.id} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
-                    <td className="p-3 text-slate-400 whitespace-nowrap">
-                      {row.date}
-                    </td>
-                    <td className="p-3 text-slate-300 font-medium">{row.task}</td>
-                    <td className="p-3 text-slate-400">{row.domain}</td>
-                    <td className="p-3">
-                      <span className={`px-2 py-0.5 rounded-full text-[10px] font-medium ${
-                        row.status === 'Completed' ? 'bg-emerald-500/10 text-emerald-400' :
-                        row.status === 'Processing' ? 'bg-sky-500/10 text-sky-400' :
-                        'bg-amber-500/10 text-amber-400'
-                      }`}>
-                        {row.status}
-                      </span>
-                    </td>
-                    <td className="p-3 text-right text-slate-300">{row.keywords}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </div>
+function ReportsContent() {
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
 
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold text-slate-300 px-1">Quick Actions</h3>
-          {quickActions.map((action, idx) => {
-            const Icon = action.icon;
-            return (
-              <button
-                key={action.id}
-                onClick={() => showToast(`${action.label} initiated`,
+  const mockReports = useMemo(() => [
+    { id: 1, title: 'Monthly SEO Performance', type: 'PDF', date: '2024-01-15', status: 'completed', size: '2.4 MB' },
+    { id: 2, title: 'Keyword Rank Tracker', type: 'CSV', date: '2024-01-14', status: 'completed', size: '1.8 MB' },
+    { id: 3, title
