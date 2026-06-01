@@ -1,0 +1,82 @@
+name: "🏋 Feature Request"
+description: "Propose a new feature or enhancement for StellarSEO."
+title: "[Feature]: "
+about: "Feature Requests"
+labels: "enhancement"
+body:
+  - type: markdown
+    attributes:
+      value: "##Feature Request
+
+Use this template to propose a new capability or engineering improvement for StellarSEO."
+    valid:
+      required: true
+
+  - type: textarea
+    id: problem_statement
+    attributes:
+      label: "Problem Statement"
+      description: "Describe the problem you're trying to solve. What gap are you experiencing in the current workflow?"
+      placeholder: "Currently, we have to manually scrape google search results for each keyword, which takes hours for a single cluster."
+    valid:
+      required: true
+
+  - type: textarea
+    id: proposed_solution
+    attributes:
+      label: "Proposed Solution"
+      description: "Describe your proposed solution in detail. How would it work? What dependencies does it have?"
+      placeholder: "Build a GitHub Action that automatically crawls Google Search Console API for the top 100 keywords and stores results in a JSon file."
+    valid:
+      required: true
+
+  - type: textarea
+    id: alternatives_considered
+    attributes:
+      label: "Alternatives Considered"
+      description: "Have you considered any alternative approaches? List them here and why they were rejected."
+      placeholder: "We considered a manual scraping screen but it wouldn't scale. Also considered a third-party tool but it lacked accuracy."
+      render: textarea
+    valid:
+      required: false
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: "Priority"
+      description: "What priority level would you assign this feature?"
+      options:
+        - P0 - Critical (blocker / urgent)
+        - P1 - High (important, ship soon)
+        - P2 - Medium (improvement, next quarter)
+        - P3 - Low (nice to have, no specific timeline)
+      default: P2
+    valid:
+      required: true
+
+  - type: dropdown
+    id: affected_section
+    attributes:
+      label: "Affected Section"
+      description: "Which part of StellarSEO would this feature affect?"
+      options:
+        - Dashboard / Frontend
+        - Backend / API
+        - Keyword Research (KWR)
+        - Content Generation
+        - Link Building
+        - Analytics / Reporting
+        - CI / GitHub Actions
+        - Other (describe in comments)
+    valid:
+      required: true
+
+  - type: textarea
+    id: additional_notes
+    attributes:
+      label: "Additional Notes"
+      description: "Any other context, link to external resources, screenshots, or mockups."
+      placeholder: "Link to a mockup design in Figma, attach user research data, etc."
+      render: textarea
+    valid:
+      required: false
