@@ -9,8 +9,7 @@ body:
       value: "##Bug Report
 
 Fill out this template to help us quickly understand and reproduce the issue."
-    valid:
-      required: true
+    validations:
 
   - type: textarea
     id: description
@@ -18,7 +17,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
       label: "Description"
       description: "A clear and concise description of the bug."
       placeholder: "Example: The KPI dashboard fails to load when selecting a keyword cluster."
-    valid:
+    validations:
       required: true
 
   - type: textarea
@@ -26,12 +25,13 @@ Fill out this template to help us quickly understand and reproduce the issue."
     attributes:
       label: "Steps to Reproduce"
       description: "Numbered steps to reproduce the behavior."
-      placeholder:"1. Go to '../'
-2. Click on '../'
-3. Scroll to '.../'
-4. See the error"
+      placeholder: |
+        1. Go to '../'
+        2. Click on '../'
+        3. Scroll to '.../'
+        4. See the error
       render: textarea
-    valid:
+    validations:
       required: true
 
   - type: textarea
@@ -41,7 +41,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
       description: "What you expected to happen."
       placeholder: "The dashboard should display success metrics and charts."
       render: textarea
-    valid:
+    validations:
       required: true
 
   - type: textarea
@@ -51,7 +51,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
       description: "What actually happened."
       placeholder: "The dashboard shows a blank white screen and a console error."
       render: textarea
-    valid:
+    validations:
       required: true
 
   - type: dropdown
@@ -65,7 +65,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
         - Minor
         - Low
       default: Minor
-    valid:
+    validations:
       required: true
 
   - type: dropdown
@@ -78,7 +78,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
         - Staging (parallel staging)
         - Production (live site)
         - CEI Cloud
-    valid:
+    validations:
       required: true
 
   - type: input
@@ -87,7 +87,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
       label: "Browser"
       description: "Which browser occurred the bug in?"
       placeholder: "Chrome 120, Firefox 115, Edge 123, Safari 18.0"
-    valid:
+    validations:
       required: true
 
   - type: input
@@ -96,7 +96,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
       label: "Device"
       description: "What device and/or operating system are you using?"
       placeholder: "Mac Book Pro (MacOS Sequoia 14.5), iPhone 15 pro (iOS 18)"
-    valid:
+    validations:
       required: false
 
   - type: textarea
@@ -106,7 +106,7 @@ Fill out this template to help us quickly understand and reproduce the issue."
       description: "Drag and drop screenshots, logs, or additional context. You can also paste images directly."
       placeholder: "Drag and drop screenshots here (or paste images)"
       render: textarea
-    valid:
+    validations:
       required: false
 
   - type: textarea
@@ -116,5 +116,5 @@ Fill out this template to help us quickly understand and reproduce the issue."
       description: "Any other information you think may be relevant."
       placeholder: "This bug only occurs when the database is under heavy load."
       render: textarea
-    valid:
+    validations:
       required: false
