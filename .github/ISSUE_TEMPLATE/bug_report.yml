@@ -1,0 +1,120 @@
+name: "🎛 Bug Report"
+description: "Report a bug to help us debug and fix it quickly."
+title: "[Bug]: "
+about: "Bugs and Issues"
+labels: "bug"
+body:
+  - type: markdown
+    attributes:
+      value: "##Bug Report
+
+Fill out this template to help us quickly understand and reproduce the issue."
+    valid:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: "Description"
+      description: "A clear and concise description of the bug."
+      placeholder: "Example: The KPI dashboard fails to load when selecting a keyword cluster."
+    valid:
+      required: true
+
+  - type: textarea
+    id: steps_to_reproduce
+    attributes:
+      label: "Steps to Reproduce"
+      description: "Numbered steps to reproduce the behavior."
+      placeholder:"1. Go to '../'
+2. Click on '../'
+3. Scroll to '.../'
+4. See the error"
+      render: textarea
+    valid:
+      required: true
+
+  - type: textarea
+    id: expected_behavior
+    attributes:
+      label: "Expected Behavior"
+      description: "What you expected to happen."
+      placeholder: "The dashboard should display success metrics and charts."
+      render: textarea
+    valid:
+      required: true
+
+  - type: textarea
+    id: actual_behavior
+    attributes:
+      label: "Actual Behavior"
+      description: "What actually happened."
+      placeholder: "The dashboard shows a blank white screen and a console error."
+      render: textarea
+    valid:
+      required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: "Severity"
+      description: "How severe is this issue?"
+      options:
+        - Critical
+        - Major
+        - Minor
+        - Low
+      default: Minor
+    valid:
+      required: true
+
+  - type: dropdown
+    id: environment
+    attributes:
+      label: "Environment"
+      description: "Where did the bug occur?"
+      options:
+        - Local development
+        - Staging (parallel staging)
+        - Production (live site)
+        - CEI Cloud
+    valid:
+      required: true
+
+  - type: input
+    id: browser
+    attributes:
+      label: "Browser"
+      description: "Which browser occurred the bug in?"
+      placeholder: "Chrome 120, Firefox 115, Edge 123, Safari 18.0"
+    valid:
+      required: true
+
+  - type: input
+    id: device
+    attributes:
+      label: "Device"
+      description: "What device and/or operating system are you using?"
+      placeholder: "Mac Book Pro (MacOS Sequoia 14.5), iPhone 15 pro (iOS 18)"
+    valid:
+      required: false
+
+  - type: textarea
+    id: screenshot
+    attributes:
+      label: "Screenshot / Logs"
+      description: "Drag and drop screenshots, logs, or additional context. You can also paste images directly."
+      placeholder: "Drag and drop screenshots here (or paste images)"
+      render: textarea
+    valid:
+      required: false
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: "Additional Context"
+      description: "Any other information you think may be relevant."
+      placeholder: "This bug only occurs when the database is under heavy load."
+      render: textarea
+    valid:
+      required: false
