@@ -1,4 +1,3 @@
-```jsx
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { Search, Bell, User, Menu, TrendingUp, TrendingDown, BarChart3, Globe, FileText, Settings as SettingsIcon, Activity, Zap, ArrowUpRight, ArrowDownRight, Clock, ExternalLink, CheckCircle, XCircle, AlertCircle, Loader2, Target, DollarSign, Users, Rocket, Plus, Filter, Download, Share2, ChevronDown, Edit3, Trash2, RefreshCw, PieChart, LineChart as LineChartIcon } from 'lucide-react'
 
@@ -26,7 +25,6 @@ function App() {
   useEffect(() => {
     const style = document.createElement('style')
     style.textContent = `
-
       :root { --accent: #1E3A5F; --accent2: #F7931E; }
       .glass { background: rgba(255,255,255,0.04); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; }
       .gradient-text { background: linear-gradient(135deg, #1E3A5F, #F7931E, #FF6B6B); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
@@ -162,7 +160,7 @@ function TopBar({ user, notifications, setShowNotifications, showNotifications, 
           {showUserMenu && (
             <div className="absolute right-0 top-12 w-48 glass border border-white/10 rounded-xl py-2 shadow-xl z-50">
               <button className="w-full px-4 py-2 text-sm text-slate-300 hover:bg-white/5 text-left">Profile</button>
-              <button className="w-full px-4 py-2 text-sm text-slate-300 hover:bg-white/5 text-left" onClick={() => setCurrentPage('settings')}>Settings</button>
+              <button className="w-full px-4 py-2 text-sm text-slate-300 hover:bg-white/5 text-left">Settings</button>
               <button className="w-full px-4 py-2 text-sm text-red-400 hover:bg-white/5 text-left border-t border-white/5 mt-1 pt-2">Sign out</button>
             </div>
           )}
@@ -668,4 +666,5 @@ function ReportsContent() {
   const mockReports = useMemo(() => [
     { id: 1, title: 'Monthly SEO Performance', type: 'PDF', date: '2024-01-15', status: 'completed', size: '2.4 MB' },
     { id: 2, title: 'Keyword Rank Tracker', type: 'CSV', date: '2024-01-14', status: 'completed', size: '1.8 MB' },
-    { id: 3, title
+    { id: 3, title: 'Backlink Analysis Report', type: 'PDF', date: '2024-01-13', status: 'completed', size: '3.1 MB' },
+    { id: 4, title: 'Compet
