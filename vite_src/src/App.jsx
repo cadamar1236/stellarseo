@@ -384,3 +384,92 @@ function LineChart({ data, color, gradientId }) {
     </div>
   )
 }
+
+function BarChart({ data, color, title }) {
+  const [animate, setAnimate] = useState(false)
+  const width = 400
+  const height = 200
+
+  useEffect(() => {
+    setTimeout(() => setAnimate(true), 200)
+  }, [])
+
+  const chartData = data || []
+  const maxVal = chartData.length > 0 ? Math.max(...chartData.map(d => d.value)) : 100
+
+  return (
+    <div className="glass p-5 fade-in">
+      <h3 className="text-sm font-medium text-slate-300 mb-4">{title || 'Traffic Sources'}</h3>
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+        {(chartData || []).map((d, i) => {
+          const barWidth = width / (chartData.length * 2.5)
+          const x = (i * (width / chartData.length)) + (width / (chartData.length * 2))
+          const barHeight = animate ? (d.value / maxVal) * (height - 40) : 0
+          return (
+            <g key={i}>
+              <rect x={x} y={height - 20 - barHeight} width={barWidth} height={barHeight} fill={color || '#F7931E'} rx="3" className="transition-all duration-500" style={{ transitionDelay: `${i * 100}ms }} />
+              <text x={x + barWidth / 2} y={height - 5} textAnchor="middle" className="text-[10px] fill-slate-500">{d.label}</text>
+              <text x={x + barWidth / 2} y={height - 25 - barHeight} textAnchor="middle" className="text-[10px] fill-slate-400">{d.value}%</text>
+            </g>
+          )
+        })}
+      </svg>
+    </div>
+  )
+}
+
+function DataTable({ columns, data, onSort, sortConfig }) {
+  const [sortField, setSortField] = useState(null)
+  const [sortDirection, setSortDirection] = useState('asc')
+
+  const handleSort = (callback) => (field) => {
+    const newDirection = sortField === field && sortDirection === 'asc' ? 'desc' : 'asc'
+    setSortField(field)
+    setSortDirection(newDirection)
+    callback && callback(field, newDirection)
+  }
+
+  const sortedData = useMemo(() => {
+    const list = data || []
+    if (!sortField || !list.length) return list
+    return [...list].sort((a, b) => {
+      if (a[sortField] < b[sortField]) return sortDirection === 'asc' ? -1 : 1
+      if (a[sortField] > b[sortField]) return sortDirection === 'asc' ? 1 : -1
+      return 0
+    })
+  }, [data, sortField, sortDirection])
+
+  return (
+    <div className="glass overflow-hidden fade-in">
+      <div className="overflow-x-auto">
+        <table className="w-full">
+          <thead>
+            <tr className="border-b border-white/5">
+              {(columns || []).map(col => (
+                <th key={col.key} onClick={() => col.sortable && handleSort()(col.key)} className={`px-4 py-3 text-xs font-medium text-slate-400 text-left ${col.sortable ? 'cursor-pointer hover:text-slate-200' : ''}`}>
+                  <div className="flex items-center gap-1">
+                    {col.label}
+                    {sortField === col.key && (
+                      <span className="text-[#F7931E]">{sortDirection === 'asc' ? '↑” : '↓–'}</span>
+                    )}
+                  </div>
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {(savedData || []).map((row, i) => (
+              <tr key={i} className="border-b border-white/5 hover:bg-white/[0.02] transition-colors">
+                {(columns || []).map(col => (
+                  <td key={col.key} className="px-4 py-3 text-sm text-slate-300">
+                    {col.render ? col.render(row[col.key], row) : row[col.key]}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
+}
