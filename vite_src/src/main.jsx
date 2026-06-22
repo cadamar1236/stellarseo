@@ -1,5 +1,5 @@
 import React from 'react'
-import ReactDOM from 'react-dom/client'
+import ReactDOM from 'react-dom'
 import App from './App.jsx'
 import './index.css'
 
@@ -16,17 +16,17 @@ class ErrorBoundary extends React.Component {
     const { error, componentStack } = this.state;
     if (error) return (
       <div style={{ fontFamily: 'monospace', padding: '2rem', color: '#f87171', background: '#0f172a', minHeight: '100vh' }}>
-        <h2 style={{ marginBottom: '1rem' }}>⚠️ App Error</h2>
+        <h2 style={{ marginBottom: '1rem' }}>⚠ App Error</h2>
         <pre style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}>{error.message}</pre>
         {error.stack && (
-          <details open style={{ marginBottom: '1rem' }}>
-            <summary style={{ cursor: 'pointer', color: '#94a3b8' }}>JS stack trace</summary>
+          <details open style={{ marginBottom: '1rem', cursor: 'pointer', color: '#94a386' }}>
+            <summary>JS stack trace</summary>
             <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', color: '#94a3b8', marginTop: '0.5rem' }}>{error.stack}</pre>
           </details>
         )}
         {componentStack && (
-          <details open>
-            <summary style={{ cursor: 'pointer', color: '#94a3b8' }}>React component tree</summary>
+          <details open style={{ marginBottom: '1rem', cursor: 'pointer', color: '#94a3b8' }}>
+            <summary>React component tree</summary>
             <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', color: '#94a3b8', marginTop: '0.5rem' }}>{componentStack}</pre>
           </details>
         )}
@@ -40,4 +40,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(
   <ErrorBoundary>
     <App />
   </ErrorBoundary>
-)
+w
