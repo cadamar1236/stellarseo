@@ -276,3 +276,50 @@ function NotificationsPanel({ notifications, onClose }) {
     </div>
   )
 }
+
+function KPICard({ icon: Icon, label, value, delta, color, format }) {
+  const [displayValue, setDisplayValue] = useState(0)
+  const targetValue = typeof value === 'number' ? value : parseInt(value) || 0
+
+  useEffect(() => {
+    let start = 0
+    const duration = 1000
+    const startTime = Date.now()
+    const timer = setInterval(() => {
+      const elapsed = Date.now() - startTime
+      const progress = Math.min(elapsed / duration, 1)
+      const eased = 1 - Math.pow(1 - progress, 3)
+      start = Math.floor(targetValue * eased)
+      setDisplayValue(start)
+      if (progress >= 1) clearInterval(timer)
+    }, 16)
+    return () => clearInterval(timer)
+  }, [targetValue])
+
+  const formattedValue = useMemo(() => {
+    if (format === 'currency') return `${(displayValue).toLocaleString()}`
+    if (format === 'percentage') return `${displayValue}%`
+    if (format === 'decimal') return displayValue.toFixed(1)
+    return displayValue.toLocaleString()
+  }, [displayValue, format])
+
+  return (
+    <div className="glass p-5 fade-in hover:bg-white/[0.06] transition-all duration-300 cursor-pointer group">
+      <div className="flex items-start justify-between mb-3">
+        <div className={`p2 rounded-lg ${color || 'bg-[#1E3A5F]/20'}`}>
+          <Icon className="w-5 h-5 text-[#F7931E]" />
+        </div>
+        {delta !== undefined && (
+          <span className={`flex items-center gap-1 text-xs font-medium px-2 py-0.5 rounded-full ${
+            delta >= 0 ? 'bg-green-500/10 text-green-400' : 'bg-red-500/10 text-red-400'
+          }`}>
+            {delta >= 0 ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+            {Math.abs(delta)}%
+          </span>
+        )}
+      </div>
+      <p className="text-sm text-slate-400 mb-1">{label}</p>
+      <p className="text-2xl font-bold count-up text-slate-100">{formattedValue}</p>
+    </div>
+  )
+}
