@@ -1,1 +1,1 @@
-// This file is intentionally empty - use App.jsx
+// DELETED - use App.jsx
