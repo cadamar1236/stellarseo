@@ -8,8 +8,14 @@ class ErrorBoundary extends React.Component {
   render() {
     if (this.state.error) return (
       <div style={{ fontFamily: 'monospace', padding: '2rem', color: '#f87171', background: '#0f172a', minHeight: '100vh' }}>
-        <h2>⚠️ App Error</h2>
-        <pre style={{ marginTop: '1rem', whiteSpace: 'pre-wrap' }}>{this.state.error.message}</pre>
+        <h2 style={{ marginBottom: '1rem' }}>⚠️ App Error</h2>
+        <pre style={{ whiteSpace: 'pre-wrap', marginBottom: '1rem' }}>{this.state.error.message}</pre>
+        {this.state.error.stack && (
+          <details open style={{ marginBottom: '1rem' }}>
+            <summary style={{ cursor: 'pointer', color: '#94a3b8' }}>Stack trace</summary>
+            <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', color: '#94a3b8', marginTop: '0.5rem' }}>{this.state.error.stack}</pre>
+          </details>
+        )}
       </div>
     );
     return this.props.children;
