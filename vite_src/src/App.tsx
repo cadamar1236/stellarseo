@@ -1,1 +1,1 @@
-// This file intentionally left empty - use App.jsx instead
+// This file is intentionally empty - use App.jsx
