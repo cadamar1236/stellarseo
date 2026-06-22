@@ -694,3 +694,90 @@ function AnalyticsContent() {
     </div>
   )
 }
+
+function ReportsContent() {
+  const [reports, setReports] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const mockReports = useMemo(() => [
+    { id: 1, title: 'Monthly SEO Performance', type: 'PDF', date: '2024-01-15', status: 'completed', size: '2.4 MB' },
+    { id: 2, title: 'Keyword Rank Tracker', type: 'CSV', date: '2024-01-14', status: 'completed', size: '1.8 MB' },
+    { id: 3, title: 'Backlink Analysis Report', type: 'PDF', date: '2024-01-13', status: 'completed', size: '3.1 MB' },
+    { id: 4, title: 'Site Audit Report', type: 'PDF', date: '2024-01-12', status: 'completed', size: '1.5 MB' },
+    { id: 5, title: 'Competitor Analysis', type: 'CSV', date: '2024-01-11', status: 'progress', size: '0.9 MB' },
+  ], [])
+
+  useEffect(() => {
+    setTimeout(() => {
+      setReports(mockReports)
+      setLoading(false)
+    }, 800)
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="space-y-6">
+        <h1 className="text-2xl font-bold gradient-text mb-1">Reports</h1>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[1,2,3].map(i => <div key={i} className="glass p-5 shimmer h-32" />)}
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return <div className="glass p-6 text-center">
+      <p className="text-sm text-red-400">{error}</p>
+    </div>
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold gradient-text mb-1">Reports</h1>
+          <p className="text-sm text-slate-500">Generate and view SEO performance reports.</p>
+        </div>
+        <button className="px-4 py-2 bg-white/10 rounded-lg text-sm text-slate-300 hover:bg-white/20 transition-all flex items-center gap-2">
+          <Plus className="w-4 h-4" />
+          New Report
+        </button>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {(reports || []).map(report => (
+          <div key={report.id} className="glass p-5 hover:bg-white/10 transition-all cursor-pointer">
+            <div className="flex items-start justify-between mb-3">
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-medium px-2 py-0.5 rounded bg-white/10 text-slate-400">{report.type}</span>
+                <div>
+                  <p className="text-sm font-medium text-slate-200">{report.title}</p>
+                  <p className="text-xs text-slate-500">{report.date}</p>
+                </div>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-slate-500">{report.size}</span>
+                <span className={`flex items-center gap-1 px-2 py-0.5 rounded text-xs ${
+                  report.status === 'completed' ? 'bg-green-500/10 text-green-400' :
+                  report.status === 'progress' ? 'bg-yellow-500/10 text-yellow-400' :
+                  'bg-red-500/10 text-red-400'
+                }`}>
+                  {report.status === 'completed' ? <CheckCircle className="w-3 h-3" /> : report.status === 'progress' ? <Loader2 className="w-3 h-3 animate-spin" /> : <AlertCircle className="w-3 h-3" />}
+                  {report.status}
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center justify-end gap-2">
+              <button className="p-1.5 hover:bg-white/5 rounded-lg transition-colors">
+                <Download className="w-3.5 h-3.5 text-slate-500" />
+              </button>
+              <button className="p-1.5 hover:bg-white/5 rounded-lg transition-colors">
+                <Share2 className="w-3.5 h-3.5 text-slate-500" />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}
