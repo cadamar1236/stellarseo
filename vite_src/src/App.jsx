@@ -601,3 +601,96 @@ function DashboardContent() {
     </div>
   )
 }
+
+function AnalyticsContent() {
+  const [analyticsData, setAnalyticsData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const mockAnalyticsData = useMemo(() => ({
+    topKeywords: [
+      { keyword: 'organic skincare', volume: 24500, difficulty: 42, position: 3 },
+      { keyword: 'vegan makeup', volume: 18900, difficulty: 58, position: 5 },
+      { keyword: 'natural beauty', volume: 15300, difficulty: 35, position: 2 },
+      { keyword: 'clean cosmetics', volume: 12200, difficulty: 28, position: 4 },
+      { keyword: 'sustainable beauty', volume: 9800, difficulty: 45, position: 6 },
+    ],
+    siteHealth: 87,
+    pageSpeed: 92,
+    mobileScore: 78
+  }), [])
+
+  const keywordColumns = useMemo(() => [
+    { key: 'keyword', label: 'Keyword', sortable: true },
+    { key: 'volume', label: 'Search Volume', sortable: true },
+    { key: 'difficulty', label: 'Difficulty', sortable: true, render: (val) => (
+      <div className="flex items-center gap-2">
+        <div className="w-20 h-1.5 bg-white/10 rounded-full overflow-hidden">
+          <div className="h-full bg-gradient-to-r from-green-400 via-yellow-400 to-red-400 rounded-full" style={{ width: `${val}%` }} />
+        </div>
+        <span className="text-xs text-slate-400">{val}</span>
+      </div>
+    )},
+    { key: 'position', label: 'Position', sortable: true, render: (val) => (
+      <span className={`text-xs font-medium ${val <= 3 ? 'text-green-400' : val <= 5 ? 'text-yellow-400' : 'text-red-400'}`}>
+        ##{val}
+      </span>
+    )},
+  ], [])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const data = await apiFetch('/api/analytics')
+        setAnalyticsData(data || mockAnalyticsData)
+      } catch (e) {
+        setAnalyticsData(mockAnalyticsData)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return <div className="space-y-6">
+      {[1,2,3].map(i => <div key={i} className="glass p-5 shimmer h-32" />)}
+    </div>
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold gradient-text mb-1">Analytics</h1>
+        <p className="text-sm text-slate-500">Deep dive into your SEO performance metrics.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="glass p-5 fade-in text-center">
+          <p className="text-sm text-slate-400 mb-1">Site Health</p>
+          <div className="text-3xl font-bold text-green-400">{analyticsData?.siteHealth || mockAnalyticsData.siteHealth}%</div>
+          <div className="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-green-400 to-green-300 rounded-full" style={{ width: `${analyticsData?.siteHealth || mockAnalyticsData.siteHealth}%`}} />
+          </div>
+        </div>
+        <div className="glass p-5 fade-in text-center">
+          <p className="text-sm text-slate-400 mb-1">Page Speed</p>
+          <div className="text-3xl font-bold text-blue-400">{analyticsData?.pageSpeed || mockAnalyticsData.pageSpeed}/100</div>
+          <div className="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-blue-400 to-blue-300 rounded-full" style={{ width: `${analyticsData?.pageSpeed || mockAnalyticsData.pageSpeed}%`}} />
+          </div>
+        </div>
+        <div className="glass p-5 fade-in text-center">
+          <p className="text-sm text-slate-400 mb-1">Mobile Score</p>
+          <div className="text-3xl font-bold text-orange-400">{analyticsData?.mobileScore || mockAnalyticsData.mobileScore}/100</div>
+          <div className="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden">
+            <div className="h-full bg-gradient-to-r from-orange-400 to-orange-300 rounded-full" style={{ width: `${analyticsData?.mobileScore || mockAnalyticsData.mobileScore}%`}} />
+          </div>
+        </div>
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-slate-300 mb-3">Top Keywords</h3>
+        <DataTable columns={keywordColumns} data={analyticsData?.topKeywords || mockAnalyticsData.topKeywords} />
+      </div>
+    </div>
+  )
+}
