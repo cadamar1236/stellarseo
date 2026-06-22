@@ -88,3 +88,79 @@ function App() {
     </div>
   )
 }
+
+function LandingPage({ onLogin }) {
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [loginError, setLoginError] = useState(null)
+  const [loggingIn, setLoggingIn] = useState(false)
+
+  const handleLogin = async (e) => {
+    e.preventDefault()
+    setLoginError(null)
+    if (!email || !password) {
+      setLoginError('Please enter email and password')
+      return
+    }
+    setLoggingIn(true)
+    const result = await apiFetch('/api/auth/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    })
+    if (result && result.email) {
+      onLogin(result)
+      return
+    }
+    // Demo fallback
+    if (email === 'sarah@stellar.com' && password === 'demo123') {
+      onLogin({ name: 'Sarah Chen', email: 'sarah@stellar.com', role: 'admin' })
+      return
+    }
+    setLoginError('Invalid credentials. Try sarah@stellar.com / demo123')
+    setLoggingIn(false)
+  }
+
+  const fillDemo = () => {
+    setEmail('sarah@stellar.com')
+    setPassword('demo123')
+  }
+
+  return (
+    <div className="min-h-screen bg-[#06080f] flex items-center justify-center p-4">
+      <div className="glass p-8 w-full max-w-md fade-in">
+        <div className="flex items-center justify-center gap-2 mb-6">
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#1E3A5F] to-[#F7931E] flex items-center justify-center">
+            <Rocket className="w-5 h-5 text-white" />
+          </div>
+          <span className="font-semibold text-xl">RankStellar</span>
+        </div>
+        <h1 className="text-2xl font-bold gradient-text text-center mb-2">Welcome Back</h1>
+        <p className="text-sm text-slate-500 text-center mb-6">Sign in to your StellarSEO dashboard</p>
+        {loginError && (
+          <div className="mb-4 p-3 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+            {loginError}
+          </div>
+        )}
+        <form onSubmit={handleLogin} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-1">Email</label>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="you@example.com" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#F7931E]/50 focus:ring-1 focus:ring-[#F7931E]/20 transition-all" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-slate-400 mb-1">Password</label>
+            <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="********" className="w-full px-4 py-2.5 bg-white/5 border border-white/10 rounded-lg text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-[#F7931E]/50 focus:ring-1 focus:ring-[#F7931E]/20 transition-all" />
+          </div>
+          <button type="submit" disabled={loggingIn} className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#1E3A5F] to-[#F7931E] text-white font-medium text-sm hover:opacity-90 transition-all disabled:opacity-50">
+            {loggingIn ? 'Signing in...' : 'Sign In'}
+          </button>
+        </form>
+        <div className="mt-4 text-center">
+          <button onClick={fillDemo} className="text-xs text-slate-500 hover:text-[#F7931E] transition-colors underline">
+            Use demo credentials
+          </button>
+        </div>
+      </div>
+    </div>
+  )
+}
