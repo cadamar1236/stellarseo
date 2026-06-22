@@ -164,3 +164,55 @@ function LandingPage({ onLogin }) {
     </div>
   )
 }
+
+function Sidebar({ currentPage, setCurrentPage, sidebarOpen, setSidebarOpen }) {
+  const navItems = useMemo(() => [
+    { id: 'dashboard', label: 'Dashboard', icon: BarChart3 },
+    { id: 'analytics', label: 'Analytics', icon: PieChart },
+    { id: 'reports', label: 'Reports', icon: FileText },
+    { id: 'settings', label: 'Settings', icon: SettingsIcon },
+  ], [])
+
+  return (
+    <>
+      <aside className={${sidebarOpen ? 'w-64' : 'w-0'} flex-shrink-0 flex-col border-r border-white/5 bg-white/[0.02] h-full transition-all duration-300 hidden md:flex }>
+        <div className="h-14 flex items-center px-4 border-b border-white/5">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#1E3A5F] to-[#F7931E] flex items-center justify-center">
+              <Rocket className="w-4 h-4 text-white" />
+            </div>
+            <span className="font-semibold text-lg">RankStellar</span>
+          </div>
+        </div>
+        <nav className="flex-1 p-4 space-y-1">
+          {(navItems || []).map(item => (
+            <button
+              key={item.id}
+              onClick={() => setCurrentPage(item.id)}
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all duration-200 ${
+                currentPage === item.id
+                  ? 'bg-[#1E3A5F]/20 text-[#F7931E] border border-[#F7931E]/30' 
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-white/5'
+              }`}
+            >
+              <item.icon className="w-4 h-4" />
+              {item.label}
+            </button>
+          ))}
+        </nav>
+        <div className="p-4 border-t border-white/5">
+          <div className="glass p-3 text-xs text-slate-400">
+            <p className="font-medium text-slate-300 mb-1">AI-Powered SEO</p>
+            <p className="mb-2">Unlock advanced analytics</p>
+            <button className="w-full py-1.5 px-3 rounded-lg bg-[#F7931E] text-[#06080f] font-medium hover:bg-[e6841b] transition-colors text-xs">
+              Upgrade to Pro
+            </button>
+          </div>
+        </div>
+      </aside>
+      <button onClick={() => setSidebarOpen(!sidebarOpen)} className="md:hidden fixed top-4 left-4 z-50 p-2 glass">
+        <Menu className="w-5 h-5" />
+      </button>
+    </>
+  )
+}
