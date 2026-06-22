@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App.tsx'
+import App from './App.jsx'
 import './index.css'
 
 class ErrorBoundary extends React.Component {
@@ -27,7 +27,7 @@ class ErrorBoundary extends React.Component {
         {componentStack && (
           <details open>
             <summary style={{ cursor: 'pointer', color: '#94a3b8' }}>React component tree</summary>
-            <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', color: '#94a3b8', marginTop: '0.5rem' }}>{componentStack}</pre>
+            <pre style={{ whiteSpace: 'pre-wrap', fontSize: '0.8em', color: '#94a3b8', marginTop: '0.5rem' }}>{error.stack}</pre>
           </details>
         )}
       </div>
@@ -37,9 +37,7 @@ class ErrorBoundary extends React.Component {
 }
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <ErrorBoundary>
-      <App />
-    </ErrorBoundary>
-  </React.StrictMode>
+  <ErrorBoundary>
+    <App />
+  </ErrorBoundary>
 )
