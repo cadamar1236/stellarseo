@@ -473,3 +473,131 @@ function DataTable({ columns, data, onSort, sortConfig }) {
     </div>
   )
 }
+
+function DashboardContent() {
+  const [kpiData, setKpiData] = useState(null)
+  const [chartData, setChartData] = useState(null)
+  const [activityData, setActivityData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(null)
+
+  const mockKpiData = useMemo(() => ({
+    keywordsTracked: 2847,
+    keywordsTrackedDelta: 12.5,
+    organicTraffic: 152341,
+    organicTrafficDelta: -3.2,
+    backlinksBuilt: 8976,
+    backlinksBuiltDelta: 8.1,
+    avgPosition: 4.3,
+    avgPositionDelta: -15.3
+  }), [])
+
+  const mockChartData = useMemo(() => [
+    { day: 'Mon', value: 45 },
+    { day: 'Tue', value: 52 },
+    { day: 'Wed', value: 48 },
+    { day: 'Thu', value: 61 },
+    { day: 'Fri', value: 58 },
+    { day: 'Sat', value: 72 },
+    { day: 'Sun', value: 68 }
+  ], [])
+
+  const mockBarData = useMemo(() => [
+    { label: 'Organic', value: 45 },
+    { label: 'Direct', value: 25 },
+    { label: 'Social', value: 18 },
+    { label: 'Referral', value: 12 }
+  ], [])
+
+  const mockActivityData = useMemo(() => [
+    { time: '2 min ago', action: 'Keyword update', keyword: 'organic skincare products', status: 'completed', details: 'Rank improved to #3' },
+    { time: '15 min ago', action: 'Content generated', keyword: 'best face moisturizer 2024', status: 'completed', details: 'Blog post published' },
+    { time: '1 hour ago', action: 'Link outreach', keyword: 'buy natural cosmetics', status: 'pending', details: 'Email sent to 5 bloggers' },
+    { time: '3 hours ago', action: 'Ranking alert', keyword: 'vegan makeup brands', status: 'warning', details: 'Dropped from #2 to #5' },
+    { time: '5 hours ago', action: 'Backlink found', keyword: 'organic hair products', status: 'completed', details: 'New backlink from .edu domain' }
+  ], [])
+
+  const columns = useMemo(() => [
+    { key: 'time', label: 'Time', sortable: true },
+    { key: 'action', label: 'Action', sortable: true },
+    { key: 'keyword', label: 'Keyword', sortable: true },
+    { key: 'status', label: 'Status', sortable: true, render: (val) => (
+      <span className={`flex items-center gap-1 text-xs ${
+        val === 'completed' ? 'text-green-400' : 
+        val === 'pending' ? 'text-yellow-400' : 'text-red-400'
+      }`}>
+        {val === 'completed' ? <CheckCircle className="w-3 h-3" /> : 
+         val === 'pending' ? <Loader2 className="w-3 h-3 animate-spin" /> : 
+         <AlertCircle className="w-3 h-3" />}
+        {val}
+      </span>
+    )},
+    { key: 'details', label: 'Details', sortable: false }
+  ], [])
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const [kpi, chart, activity] = await Promise.all([
+          apiFetch('/api/dashboard/kpi'),
+          apiFetch('/api/dashboard/chart'),
+          apiFetch('/api/dashboard/activity')
+        ])
+        setKpiData(kpi || mockKpiData)
+        setChartData(chart || mockChartData)
+        setActivityData(activity || mockActivityData)
+      } catch (e) {
+        setError('Failed to load dashboard data')
+        setKpiData(mockKpiData)
+        setChartData(mockChartData)
+        setActivityData(mockActivityData)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchData()
+  }, [])
+
+  if (loading) {
+    return (
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        {[1,2,3,4].map(i => (
+          <div key={i} className="glass p-5 shimmer h-32" />
+        ))}
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="glass p-6 text-center">
+        <AlertCircle className="w-12 h-12 text-red-400 mx-auto mb-4" />
+        <p className="text-sm text-slate-400">{error}</p>
+        <button onClick={() => window.location.reload()} className="mt-3 px-4 py-2 bg-white/10 rounded-lg text-sm text-slate-400 hover:bg-white/20 transition-all">Retry</button>
+      </div>
+    )
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold gradient-text mb-1">Dashboard</h1>
+        <p className="text-sm text-slate-500">Welcome back! Here's your SEO overview.</p>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4 mb-6">
+        <KPICard icon={Target} label="Keywords Tracked" value={kpiData?.keywordsTracked} delta={kpiData?.keywordsTrackedDelta} color="bg-blue-500/10" />
+        <KPICard icon={Users} label="Organic Traffic" value={kpiData?.organicTraffic} delta={kpiData?.organicTrafficDelta} color="bg-green-500/10" />
+        <KPICard icon={Globe} label="Backlinks Built" value={kpiData?.backlinksBuilt} delta={kpiData?.backlinksBuiltDelta} color="bg-purple-500/10" />
+        <KPICard icon={BarChart3} label="Avg. Position" value={kpiData?.avgPosition} delta={kpiData?.avgPositionDelta} color="bg-orange-500/10" format="decimal" />
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <LineChart data={chartData || []} />
+        <BarChart data={mockBarData} />
+      </div>
+      <div>
+        <h3 className="text-sm font-medium text-slate-300 mb-3">Recent Activity</h3>
+        <DataTable columns={columns} data={activityData || []} />
+      </div>
+    </div>
+  )
+}
