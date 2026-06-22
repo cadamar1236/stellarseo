@@ -323,3 +323,64 @@ function KPICard({ icon: Icon, label, value, delta, color, format }) {
     </div>
   )
 }
+
+function LineChart({ data, color, gradientId }) {
+  const [animate, setAnimate] = useState(false)
+  const width = 600
+  const height = 200
+
+  useEffect(() => {
+    setTimeout(() => setAnimate(true), 100)
+  }, [])
+
+  const chartData = data || []
+  const maxVal = chartData.length > 0 ? Math.max(...chartData.map(d => d.value)) : 100
+  const minVal = chartData.length > 0 ? Math.min(...chartData.map(d => d.value)) : 0
+  const range = maxVal - minVal || 1
+
+  const points = useMemo(() => {
+    return chartData.map((d, i) => {
+      const x = (i / (chartData.length - 1 || 1)) * width
+      const y = height - ((d.value - minVal) / range) * (height - 40) - 20
+      return `${x},${y}`
+    }).join(' ')
+  }, [chartData, animate])
+
+  return (
+    <div className="glass p-5 fade-in">
+      <div className="flex items-center justify-between mb-4">
+        <h3 className="text-sm font-medium text-slate-300">Keyword Rankings (7 days)</h3>
+        <div className="flex items-center gap-2">
+          <span className="flex items-center gap-1 text-xs text-slate-500">
+            <div className="w-2 h-2 rounded-full bg-[#F7931E]" />
+            Avg Position
+          </span>
+        </div>
+      </div>
+      <svg viewBox={`0 0 ${width} ${height}`} className="w-full h-auto">
+        <defs>
+          <linearGradient id={gradientId || 'lineGradient'} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={color || '#F7931E'} stopOpacity="0.3" />
+            <stop offset="100%" stopColor={color || '#F7931E'} stopOpacity="0" />
+          </linearGradient>
+          <linearGradient id="lineStroke" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stopColor={color || '#1E3A5F'} />
+            <stop offset="100%" stopColor={color || '#F7931E]'} />
+          </linearGradient>
+        </defs>
+        <polygon points={`0,{height} ${points} ${width},{height}`} fill={`url(#${gradientId || 'lineGradient'})`} className="transition-all duration-1000" style={{ opacity: animate ? 1 : 0 }} />
+        <polyline points={points} fill="none" stroke="url(#lineStroke)" strokeWidth="2" className="transition-all duration-1000" style={{ strokeDasharray: width * 2, strokeDashoffset: animate ? 0 : width * 2 }} />
+        {(chartData || []).map((d, i) => {
+          const x = (i / (chartData.length - 1 || 1)) * width
+          const y = height - ((d.value - minVal) / range) * (height - 40) - 20
+          return (
+            <circle key={i} cx={x} cy={y} r="3" fill={color || '#F7931E'} className="transition-all duration-500" style={{ opacity: animate ? 1 : 0 }} />
+          )
+        })}
+        {(chartData || []).map((d, i) => (
+          <text key={i} x={(i / (chartData.length - 1 || 1)) * width} y={height - 5} textAnchor="middle" className="text-[10px] fill-slate-500">{d.day}</text>
+        ))}
+      </svg>
+    </div>
+  )
+}
