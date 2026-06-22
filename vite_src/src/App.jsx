@@ -256,3 +256,23 @@ function TopBar({ user, notifications, setShowNotifications, showNotifications, 
     </header>
   )
 }
+
+function NotificationsPanel({ notifications, onClose }) {
+  return (
+    <div className="fixed right-0 top-14 w-80 max-h-500 glass p-4 overflow-y-auto z-50 fade-in">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-sm font-medium text-slate-300">Notifications</h3>
+        <button onClick={onClose} className="text-sm text-slate-500 hover:text-slate-300">×</button>
+      </div>
+      {(notifications || []).length === 0 && (
+        <p className="text-xs text-slate-500">No new notifications</p>
+      )}
+      {(notifications || []).map((n, i) => (
+        <div key={i} className="p-3 hover:bg-white/[0.02] rounded-lg transition-colors">
+          <p className="text-xs text-slate-300">{n.title || n.action || 'Update'}</p>
+          <p className="text-[10px] text-slate-600">{n.time || ''}</p>
+        </div>
+      ))}
+    </div>
+  )
+}
