@@ -781,3 +781,68 @@ function ReportsContent() {
     </div>
   )
 }
+
+function SettingsContent() {
+  const [settings, setSettings] = useState({
+    siteName: 'mysite.com',
+    language: 'en',
+    emailNotifications: true,
+    autoReports: false,
+    theme: 'dark',
+  })
+  const [saved, setSaved] = useState(false)
+
+  const handleSave = () => {
+    setSaved(true)
+    setTimeout(() => setSaved(false), 2000)
+  }
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold gradient-text mb-1">Settings</h1>
+        <p className="text-sm text-slate-500">Manage your StellarSEO configuration.</p>
+      </div>
+      <div className="glass p-6 space-y-5">
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-slate-300">Site Name</label>
+          <input className="bg-white/10 border border-white/10 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-accent/50" value={settings.siteName} onChange={(e) => setSettings({...settings, siteName: e.target.value})} />
+        </div>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-slate-300">Language</label>
+          <select className="bg-white/10 border border-white/10 rounded-lg px-4 py-2 text-sm text-slate-200 focus:outline-none" value={settings.language} onChange={(e) => setSettings({...settings, language: e.target.value})}>
+            <option value="en">English</option>
+            <option value="es">Spanish</option>
+            <option value="fr">French</option>
+          </select>
+        </div>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-slate-300">Email Notifications</label>
+          <button
+            className={`w-12 h-6 rounded-full transition-all ${settings.emailNotifications ? 'bg-[#F7931E]' : 'bg-white/10'}`}
+            onClick={() => setSettings({...settings, emailNotifications: !settings.emailNotifications})}
+          >
+            <div className={`p-0.5 w-4 h-4 rounded-full bg-white transition-all ${settings.emailNotifications ? 'ml-auto' : 'ml-0.5'}`} />
+          </button>
+        </div>
+        <div className="flex items-center justify-between">
+          <label className="text-sm font-medium text-slate-300">Auto-Generate Reports</label>
+          <button
+            className={`w-12 h-6 rounded-full transition-all ${settings.autoReports ? 'bg-[#F7931E]' : 'bg-white/10'}`}
+            onClick={() => setSettings({...settings, autoReports: !settings.autoReports})}
+          >
+            <div className={``-0.5 w-4 h-4 rounded-full bg-white transition-all ${settings.autoReports ? 'ml-auto' : 'ml-0.5'}`} />
+          </button>
+        </div>
+      </div>
+      <div className="flex justify-end gap-3">
+        <button onClick={() => setSettings({ siteName: 'mysite.com', language: 'en', emailNotifications: true, autoReports: false, theme: 'dark' })} className="px-4 py-2 bg-white/10 rounded-lg text-sm text-slate-300 hover:bg-white/20 transition-all">Reset</button>
+        <button onClick={handleSave} className="px-6 py-2 bg-[#F7931E] rounded-lg text-sm text-white font-medium hover:opacity-90 transition-all">
+          {saved ? '✔ Done' : 'Save Changes'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export default App
